@@ -6,7 +6,7 @@
 #    By: nponchon <nponchon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/17 12:08:55 by nponchon          #+#    #+#              #
-#    Updated: 2025/11/17 15:05:08 by nponchon         ###   ########.fr        #
+#    Updated: 2025/11/17 15:22:22 by nponchon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,7 @@ CFLAGS		=	-Wall -Wextra -Werror -pedantic -g
 all: libs $(NAME)
 
 libs:
-	make -C ./libft/
+	@make -C ./libft/
 
 $(NAME): $(OBJS) $(HEADERS) $(SRCS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
@@ -60,4 +60,7 @@ fclean: clean
 
 re: fclean all
 
-.PHONY:  all clean fclean re libs
+valgrind: all
+	valgrind --leak-check=full --show-leak-kinds=all --suppressions=valgrind.supp ./$(NAME)
+
+.PHONY:  all clean fclean re libs valgrind
