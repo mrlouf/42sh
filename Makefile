@@ -6,7 +6,7 @@
 #    By: nponchon <nponchon@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/11/17 12:08:55 by nponchon          #+#    #+#              #
-#    Updated: 2025/11/17 15:22:22 by nponchon         ###   ########.fr        #
+#    Updated: 2025/11/17 17:28:21 by nponchon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,10 @@ NAME		= 	42sh
 
 # -=-=-=-=-    FILES -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-SRC			=	main.c
+SRC			=	/main/main.c			\
+				/main/init.c			\
+				/main/prompt.c			\
+				/main/loop.c
 
 SRCDIR		=	srcs
 SRCS		=	$(addprefix $(SRCDIR)/, $(SRC))
@@ -44,7 +47,7 @@ libs:
 	@make -C ./libft/
 
 $(NAME): $(OBJS) $(HEADERS) $(SRCS) $(LIBFT)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
 	
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS) Makefile
 	mkdir -p $(@D)
