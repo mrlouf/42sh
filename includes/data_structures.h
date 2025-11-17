@@ -6,7 +6,7 @@
 /*   By: hmunoz-g <hmunoz-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:50:57 by hmunoz-g          #+#    #+#             */
-/*   Updated: 2025/11/17 15:52:32 by hmunoz-g         ###   ########.fr       */
+/*   Updated: 2025/11/17 16:03:45 by hmunoz-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define DATA_STRUCTURES_H
 
 # define VAR_HASH_SIZE 256
+# define CMD_HASH_SIZE 64
 
 # include <unistd.h>
 # include <signal.h>
@@ -99,6 +100,18 @@ typedef struct s_var_table {
     char **envp;
 } t_var_table;
 
+typedef struct s_cmd_entry {
+    char *command;
+    char *path;
+    int hits;
+    struct s_cmd_entry *next;
+} t_cmd_entry;
+
+typedef struct s_cmd_table {
+    t_cmd_entry *buckets[CMD_HASH_SIZE];
+    int total_entries;
+} t_cmd_table;
+
 typedef struct s_shell {
     t_var_table *vars;
     
@@ -110,12 +123,27 @@ typedef struct s_shell {
     
     char *history_file;
     
-    t_var_table *cmd_cache;
+    t_cmd_table *cmd_cache;
+    
     int last_exit_status;
     
     struct sigaction old_sigint;
     struct sigaction old_sigtstp;
     
 } t_shell;
+
+t_var_table *init_var_table(void);
+void free_var_table(t_var_table *table);
+int set_variable(t_var_table *table, const char *name, const char *value, int exported);
+char *get_variable(t_var_table *table, const char *name);
+int unset_variable(t_var_table *table, const char *name);
+
+t_cmd_table *init_cmd_table(void);
+void free_cmd_table(t_cmd_table *table);
+char *get_command_path(t_cmd_table *table, const char *command);
+int cache_command_path(t_cmd_table *table, const char *command, const char *path);
+void clear_cmd_cache(t_cmd_table *table);
+
+unsigned int hash_string(const char *str, unsigned int table_size);
 
 #endif
