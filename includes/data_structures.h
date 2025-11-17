@@ -6,7 +6,7 @@
 /*   By: hmunoz-g <hmunoz-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 14:50:57 by hmunoz-g          #+#    #+#             */
-/*   Updated: 2025/11/17 14:54:38 by hmunoz-g         ###   ########.fr       */
+/*   Updated: 2025/11/17 15:52:32 by hmunoz-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,7 @@ typedef struct s_shell {
     
     char *history_file;
     
-    t_hash_table *cmd_cache;
-    
+    t_var_table *cmd_cache;
     int last_exit_status;
     
     struct sigaction old_sigint;
