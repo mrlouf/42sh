@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nponchon <nponchon@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hmunoz-g <hmunoz-g@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/16 12:20:08 by nponchon          #+#    #+#             */
-/*   Updated: 2025/11/05 08:22:01 by nponchon         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:05:00 by hmunoz-g         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int			ft_atoi_base(char *str, int base);
 
 void		*ft_calloc(size_t nmemb, size_t size);
 char		*ft_strdup(char *str);
+char		*ft_strndup(char *str, int n);
 
 // ADDITIONAL FUNCTIONS
 
