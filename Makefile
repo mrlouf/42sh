@@ -17,7 +17,9 @@ OBJDIR		=	.obj
 OBJS		=	$(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 
 INC			=	./incs/
-HEADERS		=	./incs/42sh.h ./libft/libft.h
+HEADERS		=	./incs/42sh.h 			\
+				./incs/main.h	 		\
+				./libft/libft.h
 INCLUDES	=	-I
 LIBFT		=	./libft/libft.a
 
