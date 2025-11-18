@@ -16,6 +16,9 @@ SRCS		=	$(addprefix $(SRCDIR)/, $(SRC))
 OBJDIR		=	.obj
 OBJS		=	$(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 
+DEPDIR		=	.dep
+DEPS		=	$(addprefix $(DEPDIR)/, $(SRC:.c=.d))
+
 INC			=	./incs/
 HEADERS		=	./incs/42sh.h 			\
 				./incs/main.h	 		\
@@ -29,23 +32,31 @@ MAKE		=	Makefile
 
 CC			=	cc
 CFLAGS		=	-Wall -Wextra -Werror -pedantic -g
+DEPFLAGS	=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-all: libs $(NAME)
+all: directories libs $(NAME)
+
+directories:
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(DEPDIR)
 
 libs:
 	@make -C ./libft/
 
+-include $(DEPS)
+
 $(NAME): $(OBJS) $(HEADERS) $(SRCS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
 	
-$(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS) Makefile
+$(OBJDIR)/%.o: $(SRCDIR)/%.c Makefile
 	mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(INCLUDES)./libft/ -c $< -o $@
+	mkdir -p $(DEPDIR)/$(*D)
+	$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDES)./libft/ -c $< -o $@ -MF $(DEPDIR)/$*.d
 	
 clean:
-	@/bin/rm -fr $(OBJDIR)
+	@/bin/rm -fr $(OBJDIR) $(DEPDIR)
 	@make -C ./libft clean
 
 fclean: clean
@@ -57,4 +68,4 @@ re: fclean all
 valgrind: all
 	valgrind --leak-check=full --show-leak-kinds=all --suppressions=valgrind.supp ./$(NAME)
 
-.PHONY:  all clean fclean re libs valgrind
+.PHONY:  all clean fclean re libs valgrind directories

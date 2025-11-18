@@ -1,9 +1,6 @@
 #ifndef MAIN_H
 # define MAIN_H
 
-#include <pwd.h>		// for getcwd and family
-#include <string.h>
-
 /* Readline */
 # include <readline/readline.h>
 # include <readline/history.h>
