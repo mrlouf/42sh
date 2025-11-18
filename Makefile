@@ -18,7 +18,7 @@ OBJS		=	$(addprefix $(OBJDIR)/, $(SRC:.c=.o))
 
 INC			=	./incs/
 HEADERS		=	./incs/42sh.h 			\
-				./incs/prompt.h 		\
+				./incs/main.h	 		\
 				./libft/libft.h
 INCLUDES	=	-I
 LIBFT		=	./libft/libft.a
