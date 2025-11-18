@@ -8,6 +8,7 @@ void	shell_mainloop(t_shell *sh)
 	{
 		create_prompt(sh);
 		input = readline(sh->prompt);
+		free(sh->prompt);
 		if (input)
 		{
 			if (*input)

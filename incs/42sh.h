@@ -10,6 +10,7 @@
 
 # include "../libft/libft.h"
 # include "data_structures.h"
+# include "prompt.h"
 
 /* Functions */
 void		init_shell(t_shell *shell, char **env);
