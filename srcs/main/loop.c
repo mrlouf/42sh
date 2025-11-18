@@ -1,4 +1,5 @@
 #include "../incs/42sh.h"
+#include "../incs/main.h"
 
 void	shell_mainloop(t_shell *sh)
 {

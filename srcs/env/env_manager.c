@@ -1,4 +1,35 @@
 #include "../incs/42sh.h"
+#include "../incs/env.h"
+
+// DEBUG
+/* static void	print_env_variable(t_var *var)
+{
+	ft_putstr_fd(var->name, 0);
+	ft_putstr_fd("=", 0);
+	ft_putstr_fd(var->value, 0);
+	ft_putstr_fd("\n", 0);
+}
+
+static void	print_captured_env(t_var_table *table)
+{
+	ft_putstr_fd("*****************************\n", 0);
+	ft_putstr_fd("Captured initial env:\n", 0);
+	
+	for (int i = 0; i < VAR_HASH_SIZE; i++)
+	{
+		if (table->buckets[i] != NULL)
+		{
+			t_var *tmp = table->buckets[i];
+
+			while (tmp)
+			{
+				print_env_variable(tmp);
+				tmp = tmp->next;
+			}
+		}
+	}
+	ft_putstr_fd("*****************************\n", 0);
+} */
 
 t_var_table	*capture_initial_environment(char **env)
 {
@@ -98,34 +129,4 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	table->buckets[hash] = new_var;
 
 	return (1);
-}
-
-// DEBUG
-void	print_captured_env(t_var_table *table)
-{
-	ft_putstr_fd("*****************************\n", 0);
-	ft_putstr_fd("Captured initial env:\n", 0);
-	
-	for (int i = 0; i < VAR_HASH_SIZE; i++)
-	{
-		if (table->buckets[i] != NULL)
-		{
-			t_var *tmp = table->buckets[i];
-
-			while (tmp)
-			{
-				print_env_variable(tmp);
-				tmp = tmp->next;
-			}
-		}
-	}
-	ft_putstr_fd("*****************************\n", 0);
-}
-
-void	print_env_variable(t_var *var)
-{
-	ft_putstr_fd(var->name, 0);
-	ft_putstr_fd("=", 0);
-	ft_putstr_fd(var->value, 0);
-	ft_putstr_fd("\n", 0);
 }
