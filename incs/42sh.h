@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   42sh.h                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: nponchon <nponchon@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/17 12:13:41 by nponchon          #+#    #+#             */
-/*   Updated: 2025/11/17 17:58:58 by nponchon         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef _42SH_H
 # define _42SH_H
 
@@ -24,9 +12,13 @@
 # include "data_structures.h"
 
 /* Functions */
-void	init_shell(t_shell *shell, char **env);
-void	shell_mainloop(t_shell *sh);
-void	create_prompt(t_shell *sh);
-void	display_prompt(t_shell *sh);
+void		init_shell(t_shell *shell, char **env);
+void		shell_mainloop(t_shell *sh);
+void		create_prompt(t_shell *sh);
+void		display_prompt(t_shell *sh);
+
+t_var_table	*capture_initial_environment(char **env);
+void		print_captured_env(t_var_table *table); // DEBUG
+void		print_env_variable(t_var *var); // DEBUG
 
 #endif
