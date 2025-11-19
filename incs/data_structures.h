@@ -127,6 +127,7 @@ void			free_var_table(t_var_table *table);
 int				set_variable(t_var_table *table, const char *name, const char *value, int exported);
 char			*get_variable(t_var_table *table, const char *name);
 int				unset_variable(t_var_table *table, const char *name);
+t_var_table		*capture_initial_environment(char **env);
 
 t_cmd_table		*init_cmd_table(void);
 void			free_cmd_table(t_cmd_table *table);
