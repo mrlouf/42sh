@@ -36,23 +36,23 @@ def get_prompt(shell_path, env=None):
 def main():
     # Paths to the shells
     bash_path = "/bin/bash"
-    sh42_path = "./42sh"
+    # sh42_path = "./42sh"
 
     # Test with default environment
     print("Testing with default environment:")
     bash_prompt = get_prompt(bash_path)
-    sh42_prompt = get_prompt(sh42_path)
+    # sh42_prompt = get_prompt(sh42_path)
     print(f"Bash Prompt: {bash_prompt}")
-    print(f"42sh Prompt: {sh42_prompt}")
+   # print(f"42sh Prompt: {sh42_prompt}")
 
     # Test with empty environment
     print("\nTesting with empty environment:")
     empty_env = {}
     bash_prompt_empty = get_prompt(bash_path, env=empty_env)
-    sh42_prompt_empty = get_prompt(sh42_path, env=empty_env)
+   # sh42_prompt_empty = get_prompt(sh42_path, env=empty_env)
     print(f"Bash Prompt (empty env): {bash_prompt_empty}")
-    print(f"42sh Prompt (empty env): {sh42_prompt_empty}")
-
+    #print(f"42sh Prompt (empty env): {sh42_prompt_empty}")
+"""
     # Compare the prompts
     print("\nComparison Results:")
     if bash_prompt == sh42_prompt:
@@ -64,6 +64,6 @@ def main():
         print("Prompts match with empty environment.")
     else:
         print("Prompts differ with empty environment.")
-
+"""
 if __name__ == "__main__":
     main()

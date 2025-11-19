@@ -5,6 +5,7 @@ int	main(int ac, char **av, char **env)
 {
 	t_shell	sh;
 
+	// DEBUG
 	if (!isatty(STDIN_FILENO)) {
 		printf("42sh$ ");
 		fflush(stdout);
