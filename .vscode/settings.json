@@ -1,6 +1,7 @@
 {
 	"files.associations": {
 		"libft.h": "c",
-		"42sh.h": "c"
+		"42sh.h": "c",
+		"executor.h": "c"
 	}
 }

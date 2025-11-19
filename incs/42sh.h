@@ -3,6 +3,7 @@
 
 # include <limits.h>
 # include <linux/limits.h>
+# include <sys/types.h>	// for pid_t
 # include <pwd.h>		// for getcwd and family
 # include <string.h>
 

@@ -4,11 +4,12 @@ NAME		= 	42sh
 
 # -=-=-=-=-    FILES -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-SRC			=	/main/main.c			\
-				/main/init.c			\
-				/main/prompt.c			\
-				/main/loop.c			\
-				/env/env_manager.c
+SRC			=	/main/main.c					\
+				/main/init.c					\
+				/main/prompt.c					\
+				/main/loop.c					\
+				/env/env_manager.c				\
+				/executor/executor_manager.c	\
 
 SRCDIR		=	srcs
 SRCS		=	$(addprefix $(SRCDIR)/, $(SRC))
@@ -31,7 +32,7 @@ MAKE		=	Makefile
 # -=-=-=-=-    FLAGS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror -pedantic -g
+CFLAGS		=	-Wall -Wextra -Werror -pedantic -g -fsanitize=address
 DEPFLAGS	=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #

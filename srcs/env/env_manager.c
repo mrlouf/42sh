@@ -31,6 +31,27 @@ static void	print_captured_env(t_var_table *table)
 	ft_putstr_fd("*****************************\n", 0);
 } */
 
+char	*get_variable(t_var_table *table, const char *name)
+{
+	unsigned int	hash;
+	t_var			*tmp;
+
+	hash = hash_string(name, VAR_HASH_SIZE);
+	tmp = table->buckets[hash];
+
+	while(tmp)
+	{
+		if (!ft_strcmp(tmp->name, name))
+		{
+			return (tmp->value);
+		}
+		
+		tmp = tmp->next;
+	}
+
+	return (NULL);
+}
+
 t_var_table	*capture_initial_environment(char **env)
 {
 	t_var_table	*table;
