@@ -1,0 +1,16 @@
+{
+   readline_memory_leak
+   Memcheck:Leak
+   fun:xmalloc
+   fun:rl_make_bare_keymap
+   fun:rl_generic_bind
+   fun:rl_parse_and_bind
+   fun:rl_initialize
+   fun:readline
+}
+{
+   readline_memory_leak
+   Memcheck:Leak
+   ...
+   obj:/usr/lib/*/libreadline.so*
+}
