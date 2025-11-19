@@ -24,6 +24,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install readline
+        run: sudo apt-get install libreadline-dev
+
       - name: Compile 42sh
         run: make
 
