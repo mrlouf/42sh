@@ -24,9 +24,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Ensure the script is executable
-      - name: Make 42sh executable
-        run: chmod +x ./42sh
+      - name: Compile 42sh
+        run: make
 
       # Run the script
       - name: Run 42sh
