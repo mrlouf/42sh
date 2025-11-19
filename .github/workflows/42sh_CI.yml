@@ -30,8 +30,5 @@ jobs:
       - name: Compile 42sh
         run: make
 
-      - name: Run 42sh
-        run: ./42sh
-
-      - name: Exit 42sh
-        run: exit
+      - name: Test 42sh
+        run: echo 'exit' | ./42sh
