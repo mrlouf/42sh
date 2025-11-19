@@ -30,6 +30,8 @@ jobs:
       - name: Compile 42sh
         run: make
 
-      # Run the script
       - name: Run 42sh
-        run: timeout 5 ./42sh
+        run: ./42sh
+
+      - name: Exit 42sh
+        run: exit
