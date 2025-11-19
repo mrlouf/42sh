@@ -32,4 +32,4 @@ jobs:
 
       # Run the script
       - name: Run 42sh
-        run: ./42sh
+        run: timeout 5./42sh
