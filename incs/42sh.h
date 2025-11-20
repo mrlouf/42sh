@@ -7,7 +7,7 @@
 # include <pwd.h>		// for getcwd and family
 # include <string.h>
 
-# include "../libft/libft.h"
+# include "../libft/incs/libft.h"
 # include "data_structures.h"
 
 #endif

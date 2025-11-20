@@ -33,7 +33,7 @@ static char *find_executable_path(const char *command, t_var_table *vars)
 
 		if (full_path && access(full_path, F_OK | X_OK) == 0)
 		{
-			free_array((void **)path_dirs);
+			ft_array_free((void **)path_dirs);
 			return (full_path);
 		}
 		
@@ -41,7 +41,7 @@ static char *find_executable_path(const char *command, t_var_table *vars)
 		i++;
 	}
 
-	free_array((void **)path_dirs);
+	ft_array_free((void **)path_dirs);
 	return (NULL);
 }
 
@@ -139,16 +139,16 @@ static int	execute_simple_command(t_shell *shell, char *command)
 		waitpid(pid, &status, 0);
 
 		free(path);
-		free_array((void **)argv);
-		free_array((void **)envp);
+		ft_array_free((void **)argv);
+		ft_array_free((void **)envp);
 		return (WEXITSTATUS(status));
 	}
 
 	// fork FAILED
 	perror("fork failed");
 	free(path);
-	free_array((void **)argv);
-	free_array((void **)envp);
+	ft_array_free((void **)argv);
+	ft_array_free((void **)envp);
 	return (1);
 }
 

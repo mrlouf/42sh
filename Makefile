@@ -23,7 +23,7 @@ DEPS		=	$(addprefix $(DEPDIR)/, $(SRC:.c=.d))
 INC			=	./incs/
 HEADERS		=	./incs/42sh.h 			\
 				./incs/main.h	 		\
-				./libft/libft.h
+				./libft/incs/libft.h
 INCLUDES	=	-I
 LIBFT		=	./libft/libft.a
 

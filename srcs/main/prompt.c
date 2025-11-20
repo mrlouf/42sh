@@ -35,7 +35,7 @@ static char	*get_hostname(void)
 		char	**split = ft_split(hostname, '.');
 		if (split && split[0]) {
 			res = ft_strdup(split[0]);
-			free_array((void **)split);
+			ft_array_free((void **)split);
 		}
 		else {
 			res = ft_strdup(hostname);
