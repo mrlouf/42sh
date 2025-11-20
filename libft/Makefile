@@ -4,11 +4,9 @@ NAME		= 	libft.a
 
 # -=-=-=-=-    PATH -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
-SRC			= 	.
-
 # -=-=-=-=-    FILES -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-SRCS		=	ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c 	\
+SRC		=	ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c 	\
 			ft_isascii.c ft_isdigit.c ft_isprint.c ft_itoa.c ft_memchr.c 	\
 			ft_memcmp.c ft_memcpy.c ft_memmove.c ft_memset.c ft_putchar_fd.c\
 			ft_putendl_fd.c ft_putnbr_fd.c ft_putstr_fd.c ft_split.c 		\
@@ -19,38 +17,55 @@ SRCS		=	ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c 	\
 			ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c 		\
 			ft_lstadd_back.c ft_lstdelone.c ft_lstclear.c ft_lstiter.c 		\
 			ft_lstmap.c	ft_list_sort.c ft_list_reverse.c ft_list_cmp.c		\
-			get_next_line.c ft_atoi_base.c cucufu.c free_array.c			\
-			print_array.c ft_strjoin_free.c ft_isxdigit.c ft_strndup.c		
+			get_next_line.c ft_atoi_base.c cucufu.c ft_array_free.c			\
+			ft_array_print.c ft_strjoin_free.c ft_isxdigit.c ft_strndup.c	\
+			ft_array_size.c
 
-			
-OBJS		:=	$(SRCS:%.c=%.o)
+SRCDIR		=	srcs
+SRCS		=	$(addprefix $(SRCDIR)/, $(SRC))
 
-HEADER		=	libft.h ft_printf.h
+OBJS		=	$(addprefix $(OBJDIR)/, $(SRC:.c=.o))
+DEPS		=	$(addprefix $(DEPDIR)/, $(SRC:.c=.d))
+
+OBJDIR 		=	.obj
+DEPDIR		=	.dep
+
+INC			=	./incs/
+HEADERS		=	./incs/libft.h ./incs/ft_printf.h
+INCLUDES	=	-I./incs/
 
 MAKE		=	Makefile
-			
-# -=-=-=-=-    NAME -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= #
 
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -g
-INCLUDES	= -I./
+# -=-=-=-=-    FLAGS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
+
+CC			=	cc
+CFLAGS		=	-Wall -Wextra -Werror -g
+DEPFLAGS	=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-all: $(NAME)
+all: directories $(NAME)
 
-$(NAME): $(OBJS) $(HEADER) $(SRCS) $(MAKE)
+directories:
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(DEPDIR)
+
+-include $(DEPS)
+
+$(NAME): $(OBJS)
 	@ar rcs $(NAME) $(OBJS)
 	
-%.o: %.c $(HEADER) $(MAKE)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+$(OBJDIR)/%.o: $(SRCDIR)/%.c Makefile
+	@mkdir -p $(@D)
+	@mkdir -p $(DEPDIR)/$(*D)
+	@$(CC) $(CFLAGS) $(DEPFLAGS) $(INCLUDES) -c $< -o $@ -MF $(DEPDIR)/$*.d
 	
 clean:
-	@/bin/rm -f $(OBJS)
+	@/bin/rm -fr $(OBJDIR) $(DEPDIR)
 
 fclean: clean
 	@/bin/rm -f $(NAME)
 
 re: fclean all
 
-.PHONY:  all clean fclean re
+.PHONY: all clean fclean re directories
