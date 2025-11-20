@@ -10,6 +10,8 @@ SRC			=	/main/main.c					\
 				/main/loop.c					\
 				/env/env_manager.c				\
 				/executor/executor_manager.c	\
+				/executor/cmd_cache.c			\
+				/builtins/builtins_manager.c	\
 
 SRCDIR		=	srcs
 SRCS		=	$(addprefix $(SRCDIR)/, $(SRC))
@@ -24,7 +26,8 @@ INC			=	./incs/
 HEADERS		=	./incs/42sh.h 			\
 				./incs/main.h	 		\
 				./incs/env.h			\
-				./incs/executor.h
+				./incs/executor.h		\
+				./incs/builtins.h
 INCLUDES	=	-I./incs/
 LIBFT		=	./libft/libft.a
 
