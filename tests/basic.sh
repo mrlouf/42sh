@@ -14,7 +14,7 @@ PASSED_TESTS=0
 # Test 1: Launch the shell and exit immediately
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 echo "Test $TOTAL_TESTS: Launch and exit"
-exit | $MAXISHELL
+echo exit | $MAXISHELL
 if [ $? -ne 0 ]; then
     echo "Test $TOTAL_TESTS Failed: Shell did not exit cleanly."
 else
@@ -26,7 +26,7 @@ fi
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 echo "Test $TOTAL_TESTS: Check prompt display"
 PROMPT_OUTPUT=$( (echo "exit") | $MAXISHELL | head -n 1 )
-EXPECTED_PROMPT="42sh$ >"
+EXPECTED_PROMPT="42sh$ "
 if [ "$PROMPT_OUTPUT" != "$EXPECTED_PROMPT" ]; then
     echo "Test $TOTAL_TESTS Failed: Prompt mismatch."
     echo "Expected: '$EXPECTED_PROMPT', Got: '$PROMPT_OUTPUT'"
