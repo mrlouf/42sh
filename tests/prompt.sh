@@ -21,3 +21,23 @@ else
     echo "Test $TOTAL_TESTS Passed."
     PASSED_TESTS=$((PASSED_TESTS + 1))
 fi
+
+# Test 2: Check prompt display
+TOTAL_TESTS=$((TOTAL_TESTS + 1))
+echo "Test $TOTAL_TESTS: Check prompt display"
+PROMPT_OUTPUT=$( (echo "exit") | $MAXISHELL | head -n 1 )
+EXPECTED_PROMPT="42sh$ >"
+if [ "$PROMPT_OUTPUT" != "$EXPECTED_PROMPT" ]; then
+    echo "Test $TOTAL_TESTS Failed: Prompt mismatch."
+    echo "Expected: '$EXPECTED_PROMPT', Got: '$PROMPT_OUTPUT'"
+else
+    echo "Test $TOTAL_TESTS Passed."
+    PASSED_TESTS=$((PASSED_TESTS + 1))
+fi
+
+# Summary
+echo "-----------------------------------"
+echo "Total Tests: $TOTAL_TESTS"
+echo "Passed Tests: $PASSED_TESTS"
+echo "Failed Tests: $((TOTAL_TESTS - PASSED_TESTS))"
+echo "-----------------------------------"
