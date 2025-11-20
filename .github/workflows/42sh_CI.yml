@@ -32,7 +32,7 @@ jobs:
         run: make
 
       - name: Run prompt test
-        run: chmod +x ./tests/prompt.sh && ./tests/prompt.sh
+        run: chmod +x ./tests/basic.sh && ./tests/basic.sh
 
   build-macOS:
     name: Test on macOS
@@ -49,4 +49,4 @@ jobs:
         run: make
 
       - name: Run prompt test
-        run: chmod +x ./tests/prompt.sh && ./tests/prompt.sh
+        run: chmod +x ./tests/basic.sh && ./tests/basic.sh
