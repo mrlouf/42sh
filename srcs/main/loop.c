@@ -8,10 +8,11 @@ static t_ast_node	*convert_input_to_fake_ast(char *input){
 	if (!fake_input_ast)
 		return (NULL);
 	
-	fake_input_ast->argv = malloc(sizeof(char *) + 1);
+	fake_input_ast->argv = malloc(sizeof(char *) * 2);
 
 	fake_input_ast->type = AST_COMMAND;
 	fake_input_ast->argv[0] = ft_strdup(input);
+	fake_input_ast->argv[1] = NULL;
 	fake_input_ast->redirs = NULL;
 	fake_input_ast->redir_count = 0;
 	fake_input_ast->left = NULL;
@@ -42,31 +43,24 @@ void	shell_mainloop(t_shell *sh)
 		create_prompt(sh);
 		input = readline(sh->prompt);
 		free(sh->prompt);
-		if (input)
+		if (!input)
+			break;
+		if (*input)
 		{
-			if (*input)
+			add_history(input);
+			t_ast_node *fake_input_ast = convert_input_to_fake_ast(input); // DEBUG / DEV step for executor branch
+			if (!fake_input_ast)
 			{
-				if (!ft_strcmp(input, "exit"))
-				{
-					free(input);
-					exit(0);
-				}
-				add_history(input);
-				t_ast_node *fake_input_ast = convert_input_to_fake_ast(input); // DEBUG / DEV step for executor branch
-				if (!fake_input_ast)
-				{
-					ft_putstr_fd("Error: Malloc:  Fake AST node creation failed", 2);
-					free(input);
-					free_ast_node(fake_input_ast);
-					exit(1);
-				}
-				sh->last_exit_status = execute(sh, fake_input_ast);
-
+				ft_putstr_fd("Error: Malloc: Fake AST node creation failed\n", 2);
 				free(input);
-				free_ast_node(fake_input_ast);
+				exit(1);
 			}
+			sh->last_exit_status = execute(sh, fake_input_ast);
+
+			free(input);
+			free_ast_node(fake_input_ast);
 		}
 		else
-			continue;
+			free(input);
 	}
 }
