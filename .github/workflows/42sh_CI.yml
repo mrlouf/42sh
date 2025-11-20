@@ -17,6 +17,7 @@ on:
 
 jobs:
   build:
+    name: Build and Test 42sh on Ubuntu
     runs-on: ubuntu-latest
 
     steps:
@@ -32,3 +33,21 @@ jobs:
 
       - name: Run prompt test
         run: chmod +x ./tests/prompt.sh && ./tests/prompt.sh
+
+    build:
+      name: Test on macOS
+      runs-on: macos-latest
+
+      steps:
+        # Check out the repository
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Install readline
+          run: sudo apt-get install libreadline-dev -y
+
+        - name: Compile 42sh
+          run: make
+
+        - name: Run prompt test
+          run: chmod +x ./tests/prompt.sh && ./tests/prompt.sh

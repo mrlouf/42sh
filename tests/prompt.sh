@@ -6,7 +6,7 @@
 # various input scenarios.													#
 #############################################################################
 
-BASH = /bin/bash
-42SH = ../42sh
+BASH=/bin/bash
+42SH=../42sh
 
-bash -c 'echo "Hello, World!"'
+exit | ./$42SH
