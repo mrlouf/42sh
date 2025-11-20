@@ -86,6 +86,17 @@ static void	check_home_directory(char **cwd)
 
 void	create_prompt(t_shell *sh)
 {
+	// Fallback prompt for non-interactive shells
+	if (!isatty(STDIN_FILENO)) {
+		sh->prompt = ft_strdup("42sh$ ");
+		if (!sh->prompt)
+		{
+			perror("Failed to create prompt");
+			exit(EXIT_FAILURE);
+		}
+		return;
+	}
+
 	char	prompt[PATH_MAX] = "42sh> ";
 
 	char	*user = get_username();
