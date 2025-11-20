@@ -5,12 +5,12 @@ on:
   push:
     branches: 
       - main
-      - develop
+      - develop*
       - np-github_ci2
   pull_request:
     branches: 
       - main
-      - develop
+      - develop*
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
