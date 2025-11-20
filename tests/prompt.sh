@@ -6,7 +6,7 @@
 # various input scenarios.													#
 #############################################################################
 
-BASH=/bin/bash
-42SH=../42sh
+BASH='/bin/bash'
+MAXISHELL='../42sh'
 
-exit | $42SH
+exit | $MAXISHELL

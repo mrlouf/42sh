@@ -17,7 +17,7 @@ on:
 
 jobs:
   build-ubuntu:
-    name: Build and Test 42sh on Ubuntu
+    name: Test 42sh on Ubuntu
     runs-on: ubuntu-latest
 
     steps:
