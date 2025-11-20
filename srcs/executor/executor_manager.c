@@ -128,6 +128,12 @@ static int	execute_simple_command(t_shell *shell, char *command)
 	pid_t	pid;
 	int		status;
 
+	// DEBUG / DEV : while there's no parser, I reject space only commands (which will never arrive here after parser is in place)
+	char * trimmed_command = ft_strtrim(command, " ");	// DEBUG
+	if (!trimmed_command || !trimmed_command[0])		// DEBUG
+		return (1);										// DEBUG
+	free(trimmed_command);								// DEBUG
+
 	argv = build_argv_for_execve(command);
 
 	path = find_executable_path(argv[0], shell->vars);
