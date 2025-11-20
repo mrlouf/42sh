@@ -31,4 +31,4 @@ jobs:
         run: make
 
       - name: Run prompt test
-        run: ./tests/prompt.sh
+        run: chmod +x ./tests/prompt.sh && ./tests/prompt.sh
