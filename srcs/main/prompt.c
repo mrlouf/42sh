@@ -21,8 +21,8 @@ static char	*get_username(void)
 static char	*get_hostname(void)
 {
 	char	*res = NULL;
-	char	hostname[HOST_NAME_MAX] = {"hostname"}; // default value
-	if (gethostname(hostname, HOST_NAME_MAX) < 0)
+	char hostname[MAXPATHLEN] = {"hostname"}; // default value
+	if (gethostname(hostname, MAXPATHLEN) < 0)
 	{
 		perror("gethostname failed");
 		res = ft_strdup("hostname");
@@ -111,7 +111,7 @@ void	create_prompt(t_shell *sh)
 
 	check_home_directory(&cwd);
 
-	sprintf(prompt, "42sh> %s@%s:%s$ ", user, hostname, cwd);
+	snprintf(prompt, sizeof(prompt), "42sh> %s@%s:%s$ ", user, hostname, cwd);
 	free(user);
 	free(hostname);
 	free(cwd);
