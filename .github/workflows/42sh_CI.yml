@@ -39,12 +39,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install readline
-        run: sudo apt-get install libreadline-dev -y
+        run: brew install readline
 
       - name: Compile 42sh
         run: make

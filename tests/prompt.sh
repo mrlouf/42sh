@@ -9,4 +9,4 @@
 BASH=/bin/bash
 42SH=../42sh
 
-exit | ./$42SH
+exit | $42SH
