@@ -31,8 +31,8 @@ jobs:
       - name: Compile 42sh
         run: make
 
-      - name: Run prompt test
-        run: chmod +x ./tests/prompt.sh && ./tests/prompt.sh
+      - name: Run basic tests
+        run: chmod +x ./tests/basic.sh && ./tests/basic.sh
 
   build-macOS:
     name: Test on macOS
@@ -48,5 +48,5 @@ jobs:
       - name: Compile 42sh
         run: make
 
-      - name: Run prompt test
-        run: chmod +x ./tests/prompt.sh && ./tests/prompt.sh
+      - name: Run basic tests
+        run: chmod +x ./tests/basic.sh && ./tests/basic.sh
