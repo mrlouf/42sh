@@ -2,6 +2,30 @@
 #include "../incs/executor.h"
 #include <sys/wait.h>
 
+static char	**build_argv_for_execve(char *command)
+{
+	char	**argv;
+	char	**split = ft_split(command, ' ');
+	size_t	split_size = ft_array_size((void **)split);
+
+	argv = malloc(sizeof(char *) * (split_size + 1));
+	if (!argv)
+	{
+		ft_array_free((void **)split);
+		return (NULL);
+	}
+
+	for (size_t i = 0; i < split_size; i++)
+	{
+		argv[i] = ft_strdup(split[i]);
+	}
+	
+	argv[split_size] = NULL;
+
+	ft_array_free((void **)split);
+	return (argv);
+}
+
 static char *find_executable_path(const char *command, t_var_table *vars)
 {
 	char	*path_env;
@@ -33,7 +57,7 @@ static char *find_executable_path(const char *command, t_var_table *vars)
 
 		if (full_path && access(full_path, F_OK | X_OK) == 0)
 		{
-			free_array((void **)path_dirs);
+			ft_array_free((void **)path_dirs);
 			return (full_path);
 		}
 		
@@ -41,7 +65,7 @@ static char *find_executable_path(const char *command, t_var_table *vars)
 		i++;
 	}
 
-	free_array((void **)path_dirs);
+	ft_array_free((void **)path_dirs);
 	return (NULL);
 }
 
@@ -104,7 +128,9 @@ static int	execute_simple_command(t_shell *shell, char *command)
 	pid_t	pid;
 	int		status;
 
-	path = find_executable_path(command, shell->vars);
+	argv = build_argv_for_execve(command);
+
+	path = find_executable_path(argv[0], shell->vars);
 	if (!path)
 	{
 		ft_putstr_fd("42sh: ", 2);
@@ -112,16 +138,6 @@ static int	execute_simple_command(t_shell *shell, char *command)
 		ft_putstr_fd(": command not found\n", 2);
 		return(127);
 	}
-
-	argv = malloc(sizeof(char*) * 2);
-	if (!argv)
-	{
-		ft_putstr_fd("42sh: Error: mem alloc failed\n", 2);
-		free(path);
-		return(1);
-	}
-	argv[0] = ft_strdup(command);
-	argv[1] = NULL;
 
 	envp = build_envp_from_var_table(shell->vars);
 
@@ -131,7 +147,7 @@ static int	execute_simple_command(t_shell *shell, char *command)
 		// CHILD process
 		execve(path, argv, envp);
 		perror("execve failed");
-		exit(127);
+		exit(127); // TODO: connect this to the final exit gateway when that's done
 	}
 	else if (pid > 0)
 	{
@@ -139,16 +155,16 @@ static int	execute_simple_command(t_shell *shell, char *command)
 		waitpid(pid, &status, 0);
 
 		free(path);
-		free_array((void **)argv);
-		free_array((void **)envp);
+		ft_array_free((void **)argv);
+		ft_array_free((void **)envp);
 		return (WEXITSTATUS(status));
 	}
 
 	// fork FAILED
 	perror("fork failed");
 	free(path);
-	free_array((void **)argv);
-	free_array((void **)envp);
+	ft_array_free((void **)argv);
+	ft_array_free((void **)envp);
 	return (1);
 }
 
