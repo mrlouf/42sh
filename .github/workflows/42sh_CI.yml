@@ -31,4 +31,4 @@ jobs:
         run: make
 
       - name: Run prompt test
-        run: python3 tests/prompt.py
+        run: ./tests/prompt.sh
