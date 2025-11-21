@@ -47,6 +47,7 @@ void	shell_mainloop(t_shell *sh)
 			break;
 		if (*input)
 		{
+			parse_input(sh, input);
 			add_history(input);
 			t_ast_node *fake_input_ast = convert_input_to_fake_ast(input); // DEBUG / DEV step for executor branch
 			if (!fake_input_ast)
