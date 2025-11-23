@@ -14,7 +14,8 @@ PASSED_TESTS=0
 # Test 1: Launch the shell and exit immediately
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 echo "Test $TOTAL_TESTS: Launch and exit"
-echo exit | $MAXISHELL
+$MAXISHELL
+exit
 if [ $? -ne 0 ]; then
     echo "Test $TOTAL_TESTS Failed: Shell did not exit cleanly."
 else
