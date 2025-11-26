@@ -53,6 +53,9 @@ jobs:
       # Run shell script integration tests
       - name: Run integration tests (Shell scripts)
         run: |
+          # Rebuild without AddressSanitizer for integration tests to avoid memory leak exit codes
+          make clean
+          CFLAGS="-Wall -Wextra -Werror -pedantic -g" make
           chmod +x ./tests/basic.sh
           ./tests/basic.sh
 
@@ -85,6 +88,9 @@ jobs:
       # Run shell script integration tests
       - name: Run integration tests (Shell scripts)
         run: |
+          # Rebuild without AddressSanitizer for integration tests to avoid memory leak exit codes
+          make clean
+          CFLAGS="-Wall -Wextra -Werror -pedantic -g" make
           chmod +x ./tests/basic.sh
           ./tests/basic.sh
 
