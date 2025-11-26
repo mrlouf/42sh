@@ -43,12 +43,12 @@ void	shell_mainloop(t_shell *sh)
 		create_prompt(sh);
 		input = readline(sh->prompt);
 		free(sh->prompt);
+		sh->prompt = NULL;
 		if (!input)
 			break;
 		if (*input)
 		{
 			add_history(input);
-			tokenise_input(sh, input);
 			t_ast_node *fake_input_ast = convert_input_to_fake_ast(input); // DEBUG / DEV step for executor branch
 			if (!fake_input_ast)
 			{

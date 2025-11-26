@@ -100,6 +100,13 @@ typedef struct s_cmd_table {
 	int total_entries;
 } t_cmd_table;
 
+typedef struct s_echo_config {
+	int	suppress_newline;
+	int	enable_escapes;
+	int	disable_escapes;
+	int	stop_processing;
+} t_echo_config;
+
 typedef struct s_shell {
 	t_var_table			*vars;
 	
@@ -118,8 +125,9 @@ typedef struct s_shell {
 	struct sigaction 	old_sigint;
 	struct sigaction 	old_sigtstp;
 
-	char				*prompt;	// contains the prompt eg. 'nponchon@car13s4:~/Documents/OuterCore/42sh$'
+	char				*prompt;
 	char				*ifs;
+	
 } t_shell;
 
 t_var_table		*init_var_table(void);

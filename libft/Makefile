@@ -19,7 +19,7 @@ SRC		=	ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c 	\
 			ft_lstmap.c	ft_list_sort.c ft_list_reverse.c ft_list_cmp.c		\
 			get_next_line.c ft_atoi_base.c cucufu.c ft_array_free.c			\
 			ft_array_print.c ft_strjoin_free.c ft_isxdigit.c ft_strndup.c	\
-			ft_array_size.c
+			ft_array_size.c ft_split_charset.c
 
 SRCDIR		=	srcs
 SRCS		=	$(addprefix $(SRCDIR)/, $(SRC))
