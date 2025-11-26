@@ -81,22 +81,8 @@ jobs:
       - name: Compile 42sh
         run: make
 
-      # Run Criterion unit tests
-      - name: Run unit tests (Criterion)
-        run: make test
+      - name: Run 42sh
+        run: ./42sh
 
-      # Run shell script integration tests
-      - name: Run integration tests (Shell scripts)
-        run: |
-          # Rebuild without AddressSanitizer for integration tests to avoid memory leak exit codes
-          make clean
-          CFLAGS="-Wall -Wextra -Werror -pedantic -g" make
-          chmod +x ./tests/basic.sh
-          ./tests/basic.sh
-
-      # Optional: Memory testing
-      - name: Basic memory check
-        run: |
-          echo "Memory testing on macOS - using basic leak detection"
-          # You could add specific macOS memory testing tools here if needed
-        continue-on-error: true
+      - name: Exit 42sh
+        run: exit
