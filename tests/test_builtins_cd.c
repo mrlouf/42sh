@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <limits.h>  // For PATH_MAX
 #include "../incs/42sh.h"
 #include "../incs/builtins.h"
 
@@ -57,7 +58,9 @@ Test(cd_builtin, changes_to_valid_directory) {
     char original_dir[1024];
     getcwd(original_dir, sizeof(original_dir));
     
-    char *argv[] = {"cd", "/tmp", NULL};
+    // Use a directory that should exist and be accessible on most systems
+    char *test_dir = "/tmp";
+    char *argv[] = {"cd", test_dir, NULL};
     
     int result = builtin_cd(shell, argv);
     
@@ -65,7 +68,15 @@ Test(cd_builtin, changes_to_valid_directory) {
     
     char current_dir[1024];
     getcwd(current_dir, sizeof(current_dir));
-    cr_assert_str_eq(current_dir, "/tmp", "Should be in /tmp directory");
+    
+    // Get the realpath of /tmp to handle symlinks (like /tmp -> /private/tmp on macOS)
+    char resolved_tmp[1024];
+    if (realpath("/tmp", resolved_tmp) != NULL) {
+        cr_assert_str_eq(current_dir, resolved_tmp, "Should be in resolved /tmp directory");
+    } else {
+        // Fallback: just check that we're no longer in the original directory
+        cr_assert_neq(strcmp(current_dir, original_dir), 0, "Should have changed from original directory");
+    }
     
     chdir(original_dir);
     cleanup_test_shell(shell);
@@ -86,7 +97,15 @@ Test(cd_builtin, updates_pwd_environment_variable) {
     
     char *pwd_value = get_variable(shell->vars, "PWD");
     cr_assert_not_null(pwd_value, "PWD should be set");
-    cr_assert_str_eq(pwd_value, "/tmp", "PWD should be updated to /tmp");
+    
+    // Get the realpath of /tmp to handle symlinks
+    char resolved_tmp[1024];
+    if (realpath("/tmp", resolved_tmp) != NULL) {
+        cr_assert_str_eq(pwd_value, resolved_tmp, "PWD should be updated to resolved /tmp path");
+    } else {
+        // Fallback: just check that PWD changed from original
+        cr_assert_neq(strcmp(pwd_value, original_dir), 0, "PWD should have changed from original directory");
+    }
 
     chdir(original_dir);
     cleanup_test_shell(shell);
@@ -177,7 +196,10 @@ Test(cd_builtin, handles_relative_paths) {
     char original_dir[1024];
     getcwd(original_dir, sizeof(original_dir));
     
+    // First go to a known directory
     chdir("/tmp");
+    char tmp_dir[1024];
+    getcwd(tmp_dir, sizeof(tmp_dir));
     
     char *argv[] = {"cd", "..", NULL};
     
@@ -187,7 +209,18 @@ Test(cd_builtin, handles_relative_paths) {
     
     char current_dir[1024];
     getcwd(current_dir, sizeof(current_dir));
-    cr_assert_str_eq(current_dir, "/", "Should be in root directory");
+    
+    // Get the parent directory of where we were (/tmp/..)
+    char expected_parent[1024];
+    strcpy(expected_parent, tmp_dir);
+    char *last_slash = strrchr(expected_parent, '/');
+    if (last_slash != NULL && last_slash != expected_parent) {
+        *last_slash = '\0';
+    } else {
+        strcpy(expected_parent, "/");
+    }
+    
+    cr_assert_str_eq(current_dir, expected_parent, "Should be in parent directory");
     
     chdir(original_dir);
     cleanup_test_shell(shell);
@@ -249,7 +282,15 @@ Test(cd_builtin, handles_multiple_arguments_correctly) {
     
     char current_dir[1024];
     getcwd(current_dir, sizeof(current_dir));
-    cr_assert_str_eq(current_dir, "/tmp", "Should be in /tmp (first argument)");
+    
+    // Get the realpath of /tmp to handle symlinks
+    char resolved_tmp[1024];
+    if (realpath("/tmp", resolved_tmp) != NULL) {
+        cr_assert_str_eq(current_dir, resolved_tmp, "Should be in resolved /tmp (first argument)");
+    } else {
+        // Fallback: just check that we changed from original directory
+        cr_assert_neq(strcmp(current_dir, original_dir), 0, "Should have changed from original directory");
+    }
     
     chdir(original_dir);
     cleanup_test_shell(shell);
