@@ -1,6 +1,6 @@
-#include "../incs/42sh.h"
-#include "../incs/main.h"
-#include "../incs/executor.h"
+#include "../../incs/42sh.h"
+#include "../../incs/main.h"
+#include "../../incs/executor.h"
 
 // DEBUG / DEV function for execution branch
 static t_ast_node	*convert_input_to_fake_ast(char *input){
@@ -49,7 +49,8 @@ void	shell_mainloop(t_shell *sh)
 		if (*input)
 		{
 			add_history(input);
-			t_ast_node *fake_input_ast = convert_input_to_fake_ast(input); // DEBUG / DEV step for executor branch
+			tokenise_input(sh, input);
+/* 			t_ast_node *fake_input_ast = convert_input_to_fake_ast(input); // DEBUG / DEV step for executor branch
 			if (!fake_input_ast)
 			{
 				ft_putstr_fd("Error: Malloc: Fake AST node creation failed\n", 2);
@@ -59,7 +60,7 @@ void	shell_mainloop(t_shell *sh)
 			sh->last_exit_status = execute(sh, fake_input_ast);
 
 			free(input);
-			free_ast_node(fake_input_ast);
+			free_ast_node(fake_input_ast); */
 		}
 		else
 			free(input);

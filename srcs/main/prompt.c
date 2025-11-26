@@ -1,5 +1,5 @@
-#include "../incs/42sh.h"
-#include "../incs/main.h"
+#include "../../incs/42sh.h"
+#include "../../incs/main.h"
 
 static char	*get_username(void)
 {

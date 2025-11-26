@@ -69,7 +69,8 @@ HEADERS			=	./incs/42sh.h 			\
 					./incs/main.h	 		\
 					./incs/env.h			\
 					./incs/executor.h		\
-					./incs/builtins.h
+					./incs/builtins.h		\
+					./incs/token.h			\
 INCLUDES		=	-I./incs/
 LIBFT			=	./libft/libft.a
 
