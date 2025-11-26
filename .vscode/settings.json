@@ -1,0 +1,9 @@
+{
+	"files.associations": {
+		"../incs/libft.h": "c",
+		"42sh.h": "c",
+		"executor.h": "c",
+		"libft.h": "c",
+		"ft_printf.h": "c"
+	}
+}

@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: 
+      - main
+      - develop*
+      - np-github_ci2
+      - executor
+      - hm-basic_builtins
+  pull_request:
+    branches: 
+      - main
+      - develop*
+      - executor*
+
+  workflow_dispatch:
+
+jobs:
+  test-ubuntu:
+    name: Test 42sh on Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreadline-dev
+          
+          # Try to install Criterion, but don't fail if unavailable
+          sudo apt-get install -y libcriterion-dev || echo "System Criterion not available - will use automatic local install"
+
+      - name: Setup Criterion (fallback)
+        run: |
+          # Check if Criterion is available, if not, install locally
+          if ! make test-debug 2>/dev/null | grep -q "Criterion available: 1"; then
+            echo "Installing Criterion locally..."
+            python3 -m pip install --user meson ninja
+            export PATH=$HOME/.local/bin:$PATH
+            echo "y" | make test-setup
+          fi
+
+      - name: Compile 42sh
+        run: make
+
+      # Run Criterion unit tests
+      - name: Run unit tests (Criterion)
+        run: make test
+
+      # Run shell script integration tests
+      - name: Run integration tests (Shell scripts)
+        run: |
+          # Rebuild without AddressSanitizer for integration tests to avoid memory leak exit codes
+          make clean
+          CFLAGS="-Wall -Wextra -Werror -pedantic -g" make
+          chmod +x ./tests/basic.sh
+          ./tests/basic.sh
+
+      # Optional: Memory testing with Valgrind
+      - name: Test with Valgrind (optional)
+        run: |
+          sudo apt-get install -y valgrind
+          make valgrind || true
+        continue-on-error: true
+
+  test-macOS:
+    name: Test on macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install readline criterion
+
+      - name: Compile 42sh
+        run: make
+
+      - name: Run 42sh
+        run: ./42sh
+
+      - name: Exit 42sh
+        run: exit
