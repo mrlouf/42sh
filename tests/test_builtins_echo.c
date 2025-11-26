@@ -3,7 +3,6 @@
 #include "../incs/42sh.h"
 #include "../incs/builtins.h"
 
-// Setup function to redirect stdout for testing
 void setup_echo_tests(void) {
     cr_redirect_stdout();
 }
@@ -12,7 +11,6 @@ void teardown_echo_tests(void) {
     cr_redirect_stdout();
 }
 
-// Define the test suite
 TestSuite(echo_builtin, .init = setup_echo_tests, .fini = teardown_echo_tests);
 
 Test(echo_builtin, simple_text) {
