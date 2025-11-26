@@ -57,3 +57,39 @@ Test(echo_builtin, backslash_escape) {
     cr_assert_eq(result, 0, "echo -e should return 0");
     cr_assert_stdout_eq_str("hello\\world\n", "echo -e should interpret \\\\ as single backslash");
 }
+
+Test(echo_builtin, no_escape_by_default) {
+    char *argv[] = {"echo", "hello\\nworld", NULL};
+    
+    int result = builtin_echo(argv);
+    
+    cr_assert_eq(result, 0, "echo should return 0");
+    cr_assert_stdout_eq_str("hello\\nworld\n", "echo should NOT interpret escapes by default (POSIX behavior)");
+}
+
+Test(echo_builtin, combined_flags_ne) {
+    char *argv[] = {"echo", "-ne", "hello\\tworld", NULL};
+    
+    int result = builtin_echo(argv);
+    
+    cr_assert_eq(result, 0, "echo -ne should return 0");
+    cr_assert_stdout_eq_str("hello\tworld", "echo -ne should process escapes AND suppress newline");
+}
+
+Test(echo_builtin, combined_flags_en) {
+    char *argv[] = {"echo", "-en", "hello\\tworld", NULL};
+    
+    int result = builtin_echo(argv);
+    
+    cr_assert_eq(result, 0, "echo -en should return 0");
+    cr_assert_stdout_eq_str("hello\tworld", "echo -en should process escapes AND suppress newline (order shouldn't matter)");
+}
+
+Test(echo_builtin, c_escape_stops_processing) {
+    char *argv[] = {"echo", "-e", "hello\\cworld", NULL};
+    
+    int result = builtin_echo(argv);
+    
+    cr_assert_eq(result, 0, "echo -e should return 0");
+    cr_assert_stdout_eq_str("hello", "echo -e with \\c should stop processing and suppress newline");
+}
