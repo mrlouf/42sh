@@ -1,4 +1,5 @@
 #include "../incs/42sh.h"
+#include "../incs/main.h"
 #include "../incs/builtins.h"
 
 int	is_builtin_command(const char *command)
@@ -52,6 +53,7 @@ int	builtin_exit(t_shell *shell, char **argv)
 	}
 	
 	ft_putstr_fd("exit\n", 1);
+	cleanup_shell(shell);
 	exit(exit_code);
 }
 
