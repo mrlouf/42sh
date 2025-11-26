@@ -43,6 +43,7 @@ void	shell_mainloop(t_shell *sh)
 		create_prompt(sh);
 		input = readline(sh->prompt);
 		free(sh->prompt);
+		sh->prompt = NULL;
 		if (!input)
 			break;
 		if (*input)
