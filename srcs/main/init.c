@@ -15,3 +15,15 @@ void	init_shell(t_shell *shell, char **env)
 		exit(1);
 	}
 }
+
+void	cleanup_shell(t_shell *shell)
+{
+	if (!shell)
+		return ;
+	if (shell->vars)
+		free_var_table(shell->vars);
+	if (shell->cmd_cache)
+		free_cmd_table(shell->cmd_cache);
+	if (shell->prompt)
+		free(shell->prompt);
+}
