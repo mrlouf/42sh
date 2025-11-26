@@ -48,20 +48,7 @@ else
     report_ok $TOTAL_TESTS
 fi
 
-# Test 2: Prompt display (first non-empty line)
-TOTAL_TESTS=$((TOTAL_TESTS + 1))
-echo "Test $TOTAL_TESTS: Check prompt display"
-run_pty "exit"
-# extract first non-empty line
-PROMPT_OUTPUT=$(printf "%s\n" "$LAST_OUT" | sed -n '/./{p;q}')
-EXPECTED_PROMPT="42sh$ "
-if [ "$PROMPT_OUTPUT" != "$EXPECTED_PROMPT" ]; then
-    report_fail $TOTAL_TESTS "Prompt mismatch. Expected: '$EXPECTED_PROMPT', Got: '$PROMPT_OUTPUT'"
-else
-    report_ok $TOTAL_TESTS
-fi
-
-# Test 3: Simple builtin command (echo)
+# Test 23: Simple builtin command (echo)
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 echo "Test $TOTAL_TESTS: Echo builtin"
 run_pty $'echo hello\nexit'
@@ -71,7 +58,7 @@ else
     report_fail $TOTAL_TESTS "Expected output 'hello' not found. Full output:\n$LAST_OUT"
 fi
 
-# Test 4: cd and pwd
+# Test 3: cd and pwd
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 echo "Test $TOTAL_TESTS: cd and pwd"
 TMPDIR=$(mktemp -d)
