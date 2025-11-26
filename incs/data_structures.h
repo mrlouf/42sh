@@ -118,8 +118,8 @@ typedef struct s_shell {
 	struct sigaction 	old_sigint;
 	struct sigaction 	old_sigtstp;
 
-	char				*prompt;
-	
+	char				*prompt;	// contains the prompt eg. 'nponchon@car13s4:~/Documents/OuterCore/42sh$'
+	char				*ifs;
 } t_shell;
 
 t_var_table		*init_var_table(void);
