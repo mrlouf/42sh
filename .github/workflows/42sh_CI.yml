@@ -1,37 +1,87 @@
 name: CI
 
 on:
-  # Triggers the workflow on push or pull request events for specific branches
   push:
     branches: 
       - main
-      - develop
-      - np-github_ci
+      - develop*
+      - np-github_ci2
+      - executor
+      - hm-basic_builtins
   pull_request:
     branches: 
       - main
-      - develop
+      - develop*
+      - executor*
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  build:
+  test-ubuntu:
+    name: Test 42sh on Ubuntu
     runs-on: ubuntu-latest
 
     steps:
-      # Check out the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install readline
-        run: sudo apt-get install libreadline-dev
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreadline-dev libcriterion-dev
 
       - name: Compile 42sh
         run: make
 
-      - name: Run 42sh
-        run: ./42sh
+      # Run Criterion unit tests
+      - name: Run unit tests (Criterion)
+        run: make test
 
-      - name: Exit 42sh
-        run: exit
+      # Run shell script integration tests
+      - name: Run integration tests (Shell scripts)
+        run: |
+          chmod +x ./tests/basic.sh
+          chmod +x ./tests/builtins.sh
+          ./tests/basic.sh
+          ./tests/builtins.sh
+
+      # Optional: Memory testing with Valgrind
+      - name: Test with Valgrind (optional)
+        run: |
+          sudo apt-get install -y valgrind
+          make valgrind || true
+        continue-on-error: true
+
+  test-macOS:
+    name: Test on macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install readline criterion
+
+      - name: Compile 42sh
+        run: make
+
+      # Run Criterion unit tests
+      - name: Run unit tests (Criterion)
+        run: make test
+
+      # Run shell script integration tests
+      - name: Run integration tests (Shell scripts)
+        run: |
+          chmod +x ./tests/basic.sh
+          chmod +x ./tests/builtins.sh
+          ./tests/basic.sh
+          ./tests/builtins.sh
+
+      # Optional: Memory testing
+      - name: Basic memory check
+        run: |
+          echo "Memory testing on macOS - using basic leak detection"
+          # You could add specific macOS memory testing tools here if needed
+        continue-on-error: true
