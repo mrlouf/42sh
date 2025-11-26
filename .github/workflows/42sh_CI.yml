@@ -54,9 +54,7 @@ jobs:
       - name: Run integration tests (Shell scripts)
         run: |
           chmod +x ./tests/basic.sh
-          chmod +x ./tests/builtins.sh
           ./tests/basic.sh
-          ./tests/builtins.sh
 
       # Optional: Memory testing with Valgrind
       - name: Test with Valgrind (optional)

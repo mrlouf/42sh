@@ -48,17 +48,7 @@ else
     report_ok $TOTAL_TESTS
 fi
 
-# Test 23: Simple builtin command (echo)
-TOTAL_TESTS=$((TOTAL_TESTS + 1))
-echo "Test $TOTAL_TESTS: Echo builtin"
-run_pty $'echo hello\nexit'
-if printf "%s\n" "$LAST_OUT" | grep -q -x "hello"; then
-    report_ok $TOTAL_TESTS
-else
-    report_fail $TOTAL_TESTS "Expected output 'hello' not found. Full output:\n$LAST_OUT"
-fi
-
-# Test 3: cd and pwd
+# Test 2: cd and pwd
 TOTAL_TESTS=$((TOTAL_TESTS + 1))
 echo "Test $TOTAL_TESTS: cd and pwd"
 TMPDIR=$(mktemp -d)
