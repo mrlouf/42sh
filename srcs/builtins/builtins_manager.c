@@ -14,6 +14,8 @@ int	is_builtin_command(const char *command)
 		return (1);
 	if (!ft_strcmp(command, "echo"))
 		return (1);
+	if (!ft_strcmp(command, "type"))
+		return (1);
 	
 	return (0);
 }
@@ -31,6 +33,8 @@ int	execute_builtin(t_shell *shell, char **argv)
 		return (builtin_env(shell, argv));
 	if (!ft_strcmp(argv[0], "echo"))
 		return (builtin_echo(argv));
+	if (!ft_strcmp(argv[0], "type"))
+		return( builtin_type(argv));
 	
 	return (1); // should never reach here
 }
@@ -236,3 +240,11 @@ int	builtin_echo(char **argv)
 
 	return (0);
 }
+
+// TYPE COMMAND
+int	builtin_type(char **argv)
+{
+	ft_putstr_fd(argv[0], 1);
+	return (0);
+}
+
