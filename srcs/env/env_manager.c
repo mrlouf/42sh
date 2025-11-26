@@ -151,3 +151,30 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 
 	return (1);
 }
+
+void	free_var_table(t_var_table *table)
+{
+	unsigned int	i;
+	t_var			*current;
+	t_var			*next;
+
+	if (!table)
+		return;
+
+	i = 0;
+	while (i < VAR_HASH_SIZE)
+	{
+		current = table->buckets[i];
+		while (current)
+		{
+			next = current->next;
+			free(current->name);
+			free(current->value);
+			free(current);
+			current = next;
+		}
+		table->buckets[i] = NULL;
+		i++;
+	}
+	free(table);
+}

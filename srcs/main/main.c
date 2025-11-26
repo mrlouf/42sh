@@ -9,6 +9,7 @@ int	main(int ac, char **av, char **env)
 	(void)av;
 	init_shell(&sh, env);
 	shell_mainloop(&sh);
+	cleanup_shell(&sh);
 
 	return (0);
 }

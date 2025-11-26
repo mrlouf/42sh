@@ -1,4 +1,5 @@
 #include "../incs/42sh.h"
+#include "../incs/main.h"
 #include "../incs/builtins.h"
 
 int	is_builtin_command(const char *command)
@@ -52,6 +53,7 @@ int	builtin_exit(t_shell *shell, char **argv)
 	}
 	
 	ft_putstr_fd("exit\n", 1);
+	cleanup_shell(shell);
 	exit(exit_code);
 }
 
@@ -123,7 +125,7 @@ int	builtin_env(t_shell *shell, char **argv)
 static t_echo_config	parse_echo_options(char **argv, int *i)
 {
 	t_echo_config config = {0};
-	config.enable_escapes = 1; // BASH DEFAULT
+	config.enable_escapes = 0; // POSIX DEFAULT - escapes disabled by default
 
 	if (argv && *argv)
 	{
@@ -143,6 +145,7 @@ static t_echo_config	parse_echo_options(char **argv, int *i)
 						config.enable_escapes = 0;
 						break;
 					default:
+						// Invalid option - stop processing and treat as argument
 						return (config);
 				}
 			}
