@@ -9,6 +9,8 @@ SRC				=	/main/main.c					\
 					/main/prompt.c					\
 					/main/loop.c					\
 					/token/token.c					\
+					/token/splitter.c				\
+					/token/quotes.c					\
 					/env/env_manager.c				\
 					/executor/executor_manager.c	\
 					/executor/cmd_cache.c			\

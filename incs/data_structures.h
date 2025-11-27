@@ -8,21 +8,21 @@
 # include <signal.h>
 
 typedef enum e_token_type {
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_SEMICOLON,
-	TOKEN_AND,
-	TOKEN_OR,
-	TOKEN_REDIR_IN,
-	TOKEN_REDIR_OUT,
-	TOKEN_REDIR_APPEND,
-	TOKEN_REDIR_HEREDOC,
-	TOKEN_REDIR_FD_IN,
-	TOKEN_REDIR_FD_OUT,
-	TOKEN_BACKGROUND,
-	TOKEN_LPAREN,
-	TOKEN_RPAREN,
-	TOKEN_EOF
+	TOKEN_WORD,				// "echo"
+	TOKEN_PIPE,				// "|"
+	TOKEN_SEMICOLON,		// ";"
+	TOKEN_AND,				// "&&"
+	TOKEN_OR,				// "||"
+	TOKEN_REDIR_IN,			// ">"
+	TOKEN_REDIR_OUT,		// "<"
+	TOKEN_REDIR_APPEND,		// ">>"
+	TOKEN_REDIR_HEREDOC,	// "<<"
+	TOKEN_REDIR_FD_IN,		// ???
+	TOKEN_REDIR_FD_OUT,		// ???
+	TOKEN_BACKGROUND,		// "&"
+	TOKEN_LPAREN,			// "("
+	TOKEN_RPAREN,			// ")"
+	TOKEN_EOF				// ???
 } t_token_type;
 
 typedef struct s_token {
