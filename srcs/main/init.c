@@ -32,6 +32,7 @@ void	init_shell(t_shell *shell, char **env)
 		ft_putstr_fd("Error: Failed to initialize command cache\n", 2);
 		exit(1);
 	}
+	read_history(0);
 }
 
 void	cleanup_shell(t_shell *shell)
