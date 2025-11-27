@@ -2,6 +2,7 @@
 #include "../incs/executor.h"
 #include "../incs/builtins.h"
 #include "../incs/data_structures.h"
+#include "../incs/env.h"
 #include <sys/wait.h>
 
 static char	**build_argv_for_execve(char *command)

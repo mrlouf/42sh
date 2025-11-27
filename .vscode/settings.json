@@ -4,6 +4,20 @@
 		"42sh.h": "c",
 		"executor.h": "c",
 		"libft.h": "c",
-		"ft_printf.h": "c"
+		"ft_printf.h": "c",
+		"data_structures.h": "c",
+		"typeinfo": "c",
+		"builtins.h": "c",
+		"optional": "c",
+		"istream": "c",
+		"ostream": "c",
+		"ratio": "c",
+		"system_error": "c",
+		"array": "c",
+		"functional": "c",
+		"tuple": "c",
+		"type_traits": "c",
+		"utility": "c",
+		"ranges": "c"
 	}
 }
