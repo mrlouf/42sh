@@ -1,6 +1,6 @@
-#include "../incs/42sh.h"
-#include "../incs/data_structures.h"
-#include "../incs/env.h"
+#include "../../incs/42sh.h"
+#include "../../incs/data_structures.h"
+#include "../../incs/env.h"
 
 t_cmd_table	*init_cmd_table(void)
 {

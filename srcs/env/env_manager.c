@@ -1,5 +1,5 @@
-#include "../incs/42sh.h"
-#include "../incs/env.h"
+#include "../../incs/42sh.h"
+#include "../../incs/env.h"
 
 // DEBUG
 /* static void	print_env_variable(t_var *var)

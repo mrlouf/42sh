@@ -1,7 +1,7 @@
-#include "../incs/42sh.h"
-#include "../incs/executor.h"
-#include "../incs/builtins.h"
-#include "../incs/data_structures.h"
+#include "../../incs/42sh.h"
+#include "../../incs/executor.h"
+#include "../../incs/builtins.h"
+#include "../../incs/data_structures.h"
 #include <sys/wait.h>
 
 static char	**build_argv_for_execve(char *command)

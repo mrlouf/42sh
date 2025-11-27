@@ -6,7 +6,7 @@
 /*   By: nponchon <nponchon@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 14:35:03 by nponchon          #+#    #+#             */
-/*   Updated: 2025/11/26 14:45:29 by nponchon         ###   ########.fr       */
+/*   Updated: 2025/11/26 15:26:05 by nponchon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,13 @@ static void	get_words(const char *str, const char *charset, char **tokens)
 
 char **ft_split_charset(const char *str, const char *charset)
 {
+	if (str == NULL || charset == NULL)
+		return (NULL);
+
 	char	**tokens = NULL;
 	int		word_count = 0;
 
 	word_count = count_words(str, charset);
-	printf("Word count: %d\n", word_count);
 	tokens = malloc((word_count + 1) * sizeof(char *));
 	if (tokens == NULL)
 		return (NULL);

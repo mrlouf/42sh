@@ -5,7 +5,6 @@ int	main(int ac, char **av, char **env)
 {
 	t_shell	sh;
 
-
 	(void)ac;
 	(void)av;
 	init_shell(&sh, env);

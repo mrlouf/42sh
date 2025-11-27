@@ -1,6 +1,6 @@
-#include "../incs/42sh.h"
-#include "../incs/main.h"
-#include "../incs/builtins.h"
+#include "../../incs/42sh.h"
+#include "../../incs/main.h"
+#include "../../incs/builtins.h"
 
 int	is_builtin_command(const char *command)
 {
