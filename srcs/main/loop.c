@@ -1,7 +1,7 @@
-#include "../../incs/42sh.h"
-#include "../../incs/main.h"
-#include "../../incs/executor.h"
-#include "../../incs/token.h"
+#include "../incs/42sh.h"
+#include "../incs/main.h"
+#include "../incs/executor.h"
+#include "../incs/token.h"
 
 // DEBUG / DEV function for execution branch
 static t_ast_node	*convert_input_to_fake_ast(char *input){

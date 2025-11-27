@@ -1,7 +1,7 @@
-#include "../../incs/42sh.h"
-#include "../../incs/main.h"
-#include "../../incs/env.h"
-#include "../../incs/data_structures.h"
+#include "../incs/42sh.h"
+#include "../incs/main.h"
+#include "../incs/env.h"
+#include "../incs/data_structures.h"
 
 static char	*init_ifs(void)
 {
