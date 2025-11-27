@@ -1,16 +1,15 @@
 #include "../incs/42sh.h"
 #include "../incs/env.h"
 
-// DEBUG
-/* static void	print_env_variable(t_var *var)
+void	print_var(t_var *var)
 {
-	ft_putstr_fd(var->name, 0);
-	ft_putstr_fd("=", 0);
-	ft_putstr_fd(var->value, 0);
-	ft_putstr_fd("\n", 0);
+	ft_putstr_fd(var->name, 1);
+	ft_putstr_fd("=", 1);
+	ft_putstr_fd(var->value, 1);
+	ft_putstr_fd("\n", 1);
 }
 
-static void	print_captured_env(t_var_table *table)
+void	print_var_table(t_var_table *table) // DEBUG
 {
 	ft_putstr_fd("*****************************\n", 0);
 	ft_putstr_fd("Captured initial env:\n", 0);
@@ -23,13 +22,13 @@ static void	print_captured_env(t_var_table *table)
 
 			while (tmp)
 			{
-				print_env_variable(tmp);
+				print_var(tmp);
 				tmp = tmp->next;
 			}
 		}
 	}
 	ft_putstr_fd("*****************************\n", 0);
-} */
+}
 
 char	*get_variable(t_var_table *table, const char *name)
 {
@@ -50,6 +49,32 @@ char	*get_variable(t_var_table *table, const char *name)
 	}
 
 	return (NULL);
+}
+
+static void	handle_shell_level(t_var_table *table)
+{
+	char	*lvl = get_variable(table, "SHLVL");
+	if (lvl)
+	{
+		char *new_lvl = ft_itoa(ft_atoi(lvl) + 1);
+		set_variable(table, "SHLVL", new_lvl, 1, 1);
+		free(new_lvl);
+	}
+	else
+	{
+		set_variable(table, "SHLVL", "1", 1, 1);
+	}
+}
+
+static void	handle_pwd(t_var_table *table)
+{
+	char	*pwd = get_variable(table, "PWD");
+	if (!pwd)
+	{
+		char fresh_pwd[1024] ;
+		getcwd(fresh_pwd, sizeof(fresh_pwd));
+		set_variable(table, "PWD", fresh_pwd, 1, 1);
+	}
 }
 
 t_var_table	*capture_initial_environment(char **env)
@@ -75,15 +100,17 @@ t_var_table	*capture_initial_environment(char **env)
 			name = ft_strndup(env[i], name_len);
 			value = ft_strdup(eq_pos + 1);
 
-
 			if (name && value)
-				set_variable(table, name, value, 1);
+				set_variable(table, name, value, 1, 1);
 
 			free(name);
 			free(value);
 		}
 		i++;
 	}
+
+	handle_shell_level(table);
+	handle_pwd(table);
 
 	return (table);
 }
@@ -119,7 +146,7 @@ t_var_table	*init_var_table(void)
 	return (table);
 }
 
-int	set_variable(t_var_table *table, const char *name, const char *value, int exported)
+int	set_variable(t_var_table *table, const char *name, const char *value, int exported, int was_equalized)
 {
 	unsigned int	hash = hash_string(name, VAR_HASH_SIZE);
 	t_var			*current = table->buckets[hash];
@@ -131,7 +158,7 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 			free(current->value);
 			current->value = ft_strdup((char *)value);
 			current->exported = exported;
-			return (1);
+			return (0);
 		}
 		current = current->next;
 	}
@@ -140,15 +167,69 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	if (!new_var)
 	{
 		//TODO handle malloc fails -> Garbage collector
-		return (0);
+		return (1);
 	}
 
 	new_var->name = ft_strdup((char *)name);
-	new_var->value = ft_strdup((char *)value);
+
+	if(was_equalized)
+	{
+		new_var->value = value == NULL ? ft_strdup("") : ft_strdup((char *)value);
+	} else
+	{
+		new_var->value = NULL;
+	}
+	
 	new_var->exported = exported;
-	new_var->next = table->buckets[hash]; // Beginning of chain
+	new_var->next = table->buckets[hash];
 	table->buckets[hash] = new_var;
 
+	return (0);
+}
+
+int	count_stored_env_variables(t_var_table *table)
+{
+	int		count = 0;
+	t_var	*current;
+
+	if (!table)
+		return (0);
+
+	for (int i = 0; i < VAR_HASH_SIZE; i++)
+	{
+		current = table->buckets[i];
+		while (current)
+		{
+			count++;
+			current = current->next;
+		}
+	}
+
+	return (count);
+}
+
+int compare_vars(const void *a, const void *b)
+{
+	t_var *var_a = *(t_var**)a;
+	t_var *var_b = *(t_var**)b;
+	return ft_strcmp(var_a->name, var_b->name);
+}
+
+int mark_variable_as_exported(t_var_table *table, const char *name)
+{
+	unsigned int hash = hash_string(name, VAR_HASH_SIZE);
+	t_var *current = table->buckets[hash];
+	
+	while (current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			current->exported = 1;
+			return (0);
+		}
+		current = current->next;
+	}
+	
 	return (1);
 }
 
@@ -169,7 +250,7 @@ void	free_var_table(t_var_table *table)
 		{
 			next = current->next;
 			free(current->name);
-			free(current->value);
+			if (current->value) free(current->value);
 			free(current);
 			current = next;
 		}
@@ -177,4 +258,35 @@ void	free_var_table(t_var_table *table)
 		i++;
 	}
 	free(table);
+}
+
+t_var	**get_sorted_variable_refs(t_var_table *table, size_t *count)
+{
+	*count = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			if (current->exported) {
+				(*count)++;
+			}
+			current = current->next;
+		}
+	}
+	
+	t_var **refs = malloc(*count * sizeof(t_var*));
+	if (!refs) return NULL;
+	
+	size_t var_idx = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			if (current->exported) {
+				refs[var_idx++] = current;
+			}
+			current = current->next;
+		}
+	}
+	
+	qsort(refs, *count, sizeof(t_var*), compare_vars);
+	return refs;
 }
