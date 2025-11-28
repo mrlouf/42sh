@@ -1,6 +1,5 @@
-#include "../../incs/42sh.h"
-#include "../incs/main.h"
-#include "../../incs/token.h"
+#include "../incs/42sh.h"
+#include "../incs/token.h"
 
 void		tokenise_input(t_shell *sh, char *input)
 {

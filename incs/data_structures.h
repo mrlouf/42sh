@@ -26,9 +26,9 @@ typedef enum e_token_type {
 } t_token_type;
 
 typedef struct s_token {
-	t_token_type type;
-	char *value;
-	struct s_token *next;
+	t_token_type	type;
+	char			*value;
+	struct s_token	*next;
 } t_token;
 
 typedef enum e_ast_type {
@@ -42,18 +42,27 @@ typedef enum e_ast_type {
 	AST_SUBSHELL
 } t_ast_type;
 
+typedef enum e_redir_type {
+	REDIR_IN,           // <
+	REDIR_OUT,          // >
+	REDIR_APPEND,       // >>
+	REDIR_HEREDOC,      // <<
+	REDIR_FD_IN,        // <&
+	REDIR_FD_OUT        // >&
+} t_redir_type;
+
 typedef struct s_redir {
-	int type;
-	char *file;
-	int fd;
+	int		type;
+	char	*file;
+	int		fd;
 } t_redir;
 
 typedef struct s_ast_node {
 	t_ast_type type;
 	
-	char **argv;
-	t_redir *redirs;
-	int redir_count;
+	char 	**argv;
+	t_redir	*redirs;
+	int 	redir_count;
 	
 	struct s_ast_node *left;
 	struct s_ast_node *right;
