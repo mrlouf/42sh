@@ -1,0 +1,43 @@
+# Basic Splitting
+echo hello world
+ls -l /tmp
+
+# Quotes
+echo "hello world"
+echo 'hello world'
+echo "hello    world"
+echo 'hello    world'
+echo foo"bar baz"qux
+echo 'foo"bar' baz'qux'
+echo "foo'bar"baz'qux"
+
+# Mixed Quotes and Spaces
+echo "a   b" c   d
+echo 'a   b' c   d
+echo a" b "c
+echo "a b"c'd e'
+
+# Redirections and Operators
+ls > out.txt
+cat < in.txt | grep foo
+echo hello >file 2>&1
+echo "hello" > "file name with spaces.txt"
+
+# Variable Expansion (for later stages)
+echo $HOME
+echo "$HOME"
+echo '$HOME'
+echo "User: $USER, Home: $HOME"
+
+# Escaped Quotes
+echo "He said: \"hello\""
+echo 'It'\''s fine'
+echo "Mix 'single' and \"double\" quotes"
+
+# Edge Cases
+echo ""
+echo ''
+echo "unclosed
+echo 'unclosed
+echo foo""bar
+echo foo''bar
