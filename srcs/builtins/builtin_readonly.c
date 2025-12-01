@@ -49,7 +49,7 @@ static void	print_readonly_formatted(t_var **refs, size_t count)
 {
 	for (size_t i = 0; i < count; i++)
 	{
-		ft_putstr_fd("readonly ", 1);
+		ft_putstr_fd("declare -r ", 1);
 		ft_putstr_fd(refs[i]->name, 1);
 		if (refs[i]->value)
 		{
