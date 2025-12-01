@@ -171,7 +171,7 @@ Test(readonly_builtin, readonly_overwrite_existing)
     cleanup_test_shell(shell);
 }
 
-Test(readonly_builtin, export_null_arguments)
+Test(readonly_builtin, readonly_null_arguments)
 {
     t_shell *shell = create_test_shell();
     
@@ -179,4 +179,164 @@ Test(readonly_builtin, export_null_arguments)
     cr_assert_eq(result, 1, "readonly should fail with NULL arguments");
     
     cleanup_test_shell(shell);
+}
+
+Test(readonly_builtin, readonly_create_variable_without_value) {
+	t_shell *shell = create_test_shell();
+	
+	char *argv[] = {"readonly", "BAREVAR", NULL};
+	int result = builtin_readonly(shell, argv);
+	
+	cr_assert_eq(result, 0, "readonly should succeed");
+	
+	char *value = get_variable(shell->vars, "BAREVAR");
+	cr_assert_null(value, "BAREVAR should have no value");
+	
+	cr_assert_eq(is_variable_readonly(shell->vars, "BAREVAR"), 1, "BAREVAR should be readonly");
+	
+	cleanup_test_shell(shell);
+}
+
+Test(readonly_builtin, readonly_mark_existing_variable) {
+	t_shell *shell = create_test_shell();
+	
+	// Create variable first
+	set_variable(shell->vars, "EXISTING", "original", 1, 1);
+	
+	char *argv[] = {"readonly", "EXISTING", NULL};
+	int result = builtin_readonly(shell, argv);
+	
+	cr_assert_eq(result, 0, "readonly should succeed");
+	
+	char *value = get_variable(shell->vars, "EXISTING");
+	cr_assert_str_eq(value, "original", "EXISTING should preserve original value");
+	
+	cr_assert_eq(is_variable_readonly(shell->vars, "EXISTING"), 1, "EXISTING should be readonly");
+	cr_assert_eq(is_variable_exported(shell->vars, "EXISTING"), 1, "EXISTING should preserve export status");
+	
+	cleanup_test_shell(shell);
+}
+
+Test(readonly_builtin, readonly_invalid_variable_names) {
+	t_shell *shell = create_test_shell();
+	
+	cr_redirect_stderr();
+	
+	// Test invalid starting character (digit)
+	char *argv1[] = {"readonly", "123VAR=value", NULL};
+	int result1 = builtin_readonly(shell, argv1);
+	cr_assert_eq(result1, 1, "readonly should fail for variable starting with digit");
+	
+	// Test invalid character (hyphen)
+	char *argv2[] = {"readonly", "VAR-NAME=value", NULL};
+	int result2 = builtin_readonly(shell, argv2);
+	cr_assert_eq(result2, 1, "readonly should fail for variable with hyphen");
+	
+	// Test empty variable name
+	char *argv3[] = {"readonly", "=value", NULL};
+	int result3 = builtin_readonly(shell, argv3);
+	cr_assert_eq(result3, 1, "readonly should fail for empty variable name");
+	
+	cleanup_test_shell(shell);
+}
+
+Test(readonly_builtin, readonly_multiple_variables) {
+	t_shell *shell = create_test_shell();
+	
+	char *argv[] = {"readonly", "VAR1=value1", "VAR2", "VAR3=value3", NULL};
+	int result = builtin_readonly(shell, argv);
+	
+	cr_assert_eq(result, 0, "readonly should succeed");
+	
+	// Check VAR1
+	char *value1 = get_variable(shell->vars, "VAR1");
+	cr_assert_str_eq(value1, "value1", "VAR1 should have correct value");
+	cr_assert_eq(is_variable_readonly(shell->vars, "VAR1"), 1, "VAR1 should be readonly");
+	
+	// Check VAR2 (no value)
+	char *value2 = get_variable(shell->vars, "VAR2");
+	cr_assert_null(value2, "VAR2 should have no value");
+	cr_assert_eq(is_variable_readonly(shell->vars, "VAR2"), 1, "VAR2 should be readonly");
+	
+	// Check VAR3
+	char *value3 = get_variable(shell->vars, "VAR3");
+	cr_assert_str_eq(value3, "value3", "VAR3 should have correct value");
+	cr_assert_eq(is_variable_readonly(shell->vars, "VAR3"), 1, "VAR3 should be readonly");
+	
+	cleanup_test_shell(shell);
+}
+
+Test(readonly_builtin, readonly_export_interaction) {
+	t_shell *shell = create_test_shell();
+	
+	// Create readonly variable
+	char *argv1[] = {"readonly", "VAR", NULL};
+	builtin_readonly(shell, argv1);
+	
+	// Export it (should work - just sets export flag)
+	char *argv2[] = {"export", "VAR", NULL};
+	int result = builtin_export(shell, argv2);
+	
+	cr_assert_eq(result, 0, "exporting readonly variable should succeed");
+	cr_assert_eq(is_variable_readonly(shell->vars, "VAR"), 1, "VAR should remain readonly");
+	cr_assert_eq(is_variable_exported(shell->vars, "VAR"), 1, "VAR should be exported");
+	
+	cleanup_test_shell(shell);
+}
+
+Test(readonly_builtin, readonly_export_with_value_fails_but_exports) {
+	t_shell *shell = create_test_shell();
+	
+	cr_redirect_stderr();
+	
+	// Create readonly variable
+	char *argv1[] = {"readonly", "VAR", NULL};
+	builtin_readonly(shell, argv1);
+	
+	// Try to export with value (should fail but still export)
+	char *argv2[] = {"export", "VAR=newvalue", NULL};
+	int result = builtin_export(shell, argv2);
+	
+	cr_assert_eq(result, 1, "export with value on readonly should fail");
+	cr_assert_eq(is_variable_readonly(shell->vars, "VAR"), 1, "VAR should remain readonly");
+	cr_assert_eq(is_variable_exported(shell->vars, "VAR"), 1, "VAR should be exported despite error");
+	
+	char *value = get_variable(shell->vars, "VAR");
+	cr_assert_null(value, "VAR should have no value");
+	
+	cleanup_test_shell(shell);
+}
+
+Test(readonly_builtin, readonly_display_format_with_exported) {
+	t_shell *shell = create_test_shell();
+	
+	cr_redirect_stdout();
+	
+	// Create readonly variable that's also exported
+	set_variable(shell->vars, "READONLY_EXPORTED", "value2", 1, 1);
+	mark_variable_as_readonly(shell->vars, "READONLY_EXPORTED");
+	
+	char *argv[] = {"readonly", NULL};
+	int result = builtin_readonly(shell, argv);
+	
+	cr_assert_eq(result, 0, "readonly display should succeed");
+	
+	FILE *output_file = cr_get_redirected_stdout();
+	fseek(output_file, 0, SEEK_END);
+	long length = ftell(output_file);
+	fseek(output_file, 0, SEEK_SET);
+	
+	if (length > 0) {
+		char *output = malloc(length + 1);
+		fread(output, 1, length, output_file);
+		output[length] = '\0';
+		
+		// Check for proper declare format with -rx flag
+		cr_assert(strstr(output, "declare -rx READONLY_EXPORTED=") != NULL,
+				  "Output should contain readonly+exported variable with -rx flag");
+		
+		free(output);
+	}
+	
+	cleanup_test_shell(shell);
 }

@@ -155,19 +155,28 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	{
 		if (ft_strcmp(current->name, name) == 0)
 		{
-			if (value && current->readonly)
+			// For readonly variables, always update export flag
+			if (current->readonly)
 			{
-				ft_putstr_fd("42sh: ", 2);
-				ft_putstr_fd((char *)name, 2);
-				ft_putstr_fd(": readonly variable\n", 2);
-				return (1);
+				current->exported = exported;
+				
+				// If trying to change value of readonly variable, error after setting export
+				if (value && was_equalized)
+				{
+					ft_putstr_fd("42sh: ", 2);
+					ft_putstr_fd((char *)name, 2);
+					ft_putstr_fd(": readonly variable\n", 2);
+					return (1);
+				}
+				
+				return (0);
 			}
 			
 			free(current->value);
-			if (current->value)
+			if (was_equalized)
 				current->value = value == NULL ? ft_strdup("") : ft_strdup((char *)value);
 			else
-				current->value = value == NULL ? NULL : ft_strdup((char *)value);
+				current->value = NULL;
 			
 			current->exported = exported;
 			return (0);
@@ -206,6 +215,9 @@ int	unset_variable(t_var_table *table, const char *name)
 	t_var			*current;
 	t_var			*prev;
 
+	if (!table || !name)
+		return (0);
+
 	hash = hash_string(name, VAR_HASH_SIZE);
 	prev = NULL;
 	current = table->buckets[hash];
@@ -215,32 +227,19 @@ int	unset_variable(t_var_table *table, const char *name)
 		if (!ft_strcmp(current->name, name))
 		{
 			if (current->readonly)
-				return (1); // DEBUG: CHECK LEAKS
-			if (prev)
-			{
-				if (current->next)
-				{
-					prev->next = current->next;
-				}
-				else
-				{
-					prev->next = NULL;
-				}
+				return (1); // Cannot unset readonly variable
 				
-				free(current->name);
-				if (current->value)
-					free(current->value);
-				free(current);
-			}
+			// Remove from linked list
+			if (prev)
+				prev->next = current->next;
 			else
-			{
-				free(table->buckets[hash]->name);
-				if (table->buckets[hash]->value)
-					free(table->buckets[hash]->value);
-				free(table->buckets[hash]);
-				table->buckets[hash] = NULL;
-			}
-
+				table->buckets[hash] = current->next;
+			
+			// Free memory
+			free(current->name);
+			if (current->value)
+				free(current->value);
+			free(current);
 			
 			return (0);
 		}
@@ -248,7 +247,7 @@ int	unset_variable(t_var_table *table, const char *name)
 		current = current->next;
 	}
 
-	return (0);
+	return (0);  // Variable not found - not an error in POSIX unset
 }
 
 int	count_stored_env_variables(t_var_table *table)

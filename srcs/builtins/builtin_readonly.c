@@ -141,17 +141,20 @@ int	builtin_readonly(t_shell *sh, char **argv)
 				continue;
 			}
 			
-			int exported = is_variable_exported(sh->vars, argv[i]);
-			if (set_variable(sh->vars, argv[i], NULL, exported, 0) != 0)
+			if (get_variable(sh->vars, argv[i]))
 			{
-				ft_putstr_fd("readonly: failed to set variable\n", 2);
-				free(name);
-				free(value);
-				exit_status = 1;
-				continue;
+				mark_variable_as_readonly(sh->vars, argv[i]);
 			}
-			
-			mark_variable_as_readonly(sh->vars, argv[i]);
+			else
+			{
+				if (set_variable(sh->vars, argv[i], NULL, 0, 0) != 0)
+				{
+					ft_putstr_fd("readonly: failed to set variable\n", 2);
+					exit_status = 1;
+					continue;
+				}
+				mark_variable_as_readonly(sh->vars, argv[i]);
+			}
 		}
 	}
 	
