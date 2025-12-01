@@ -12,6 +12,12 @@ SRC				=	/main/main.c					\
 					/executor/executor_manager.c	\
 					/executor/cmd_cache.c			\
 					/builtins/builtins_manager.c	\
+					/builtins/builtin_cd.c			\
+					/builtins/builtin_echo.c		\
+					/builtins/builtin_env.c			\
+					/builtins/builtin_exit.c		\
+					/builtins/builtin_export.c		\
+					/builtins/builtin_type.c		\
 
 SRCDIR			=	srcs
 SRCS			=	$(addprefix $(SRCDIR)/, $(SRC))
