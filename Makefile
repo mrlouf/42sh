@@ -10,6 +10,7 @@ SRC				=	/main/main.c					\
 					/main/loop.c					\
 					/token/token.c					\
 					/token/splitter.c				\
+					/token/continuation.c			\
 					/token/quotes.c					\
 					/env/env_manager.c				\
 					/executor/executor_manager.c	\

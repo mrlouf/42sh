@@ -5,7 +5,7 @@ char	*complete_input_with_quotes(char *input)
 {
 	char *additional_input = NULL;
 
-	while (!check_quotes(input))
+	while (is_missing_quotes(input))
 	{
 		additional_input = readline("> ");
 		if (!additional_input)
@@ -23,7 +23,7 @@ char	*complete_input_with_quotes(char *input)
 	return (input);
 }
 
-int	check_quotes(const char *input)
+int	is_missing_quotes(const char *input)
 {
 	int	i = 0;
 	int	single_quote_open = 0;
@@ -37,5 +37,5 @@ int	check_quotes(const char *input)
 			double_quote_open = !double_quote_open;
 		i++;
 	}
-	return (!single_quote_open && !double_quote_open);
+	return (single_quote_open || double_quote_open);
 }
