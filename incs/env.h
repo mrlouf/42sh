@@ -10,7 +10,10 @@ char			*get_variable(t_var_table *table, const char *name);
 int				count_stored_env_variables(t_var_table *table);
 int				compare_vars(const void *a, const void *b);
 int				mark_variable_as_exported(t_var_table *table, const char *name);
+int				mark_variable_as_readonly(t_var_table *table, const char *name);
+int				is_variable_readonly(t_var_table *table, const char *name);
 t_var			**get_sorted_variable_refs(t_var_table *table, size_t *count);
+t_var			**get_sorted_readonly_refs(t_var_table *table, size_t *count);
 void			free_var_table(t_var_table *table);
 
 // PRINTING

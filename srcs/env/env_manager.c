@@ -155,6 +155,14 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	{
 		if (ft_strcmp(current->name, name) == 0)
 		{
+			if (current->readonly)
+			{
+				ft_putstr_fd("42sh: ", 2);
+				ft_putstr_fd((char *)name, 2);
+				ft_putstr_fd(": readonly variable\n", 2);
+				return (1);
+			}
+			
 			free(current->value);
 			current->value = ft_strdup((char *)value);
 			current->exported = exported;
@@ -181,6 +189,7 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	}
 	
 	new_var->exported = exported;
+	new_var->readonly = 0;
 	new_var->next = table->buckets[hash];
 	table->buckets[hash] = new_var;
 
@@ -233,6 +242,42 @@ int mark_variable_as_exported(t_var_table *table, const char *name)
 	return (1);
 }
 
+int mark_variable_as_readonly(t_var_table *table, const char *name)
+{
+	unsigned int	hash = hash_string(name, VAR_HASH_SIZE);
+	t_var			*current = table->buckets[hash];
+
+	while (current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			current->readonly = 1;
+			return (0);
+		}
+
+		current = current->next;
+	}
+
+	return (1);
+}
+
+int	is_variable_readonly(t_var_table *table, const char *name)
+{
+	unsigned int	hash = hash_string(name, VAR_HASH_SIZE);
+	t_var			*current = table->buckets[hash];
+
+	while(current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			return (current->readonly);
+		}
+		current = current->next;
+	}
+
+	return (0);
+}
+
 void	free_var_table(t_var_table *table)
 {
 	unsigned int	i;
@@ -258,6 +303,40 @@ void	free_var_table(t_var_table *table)
 		i++;
 	}
 	free(table);
+}
+
+t_var	**get_sorted_readonly_refs(t_var_table *table, size_t *count)
+{
+	*count = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			if (current->readonly) {
+				(*count)++;
+			}
+			current = current->next;
+		}
+	}
+	
+	if (*count == 0)
+		return (NULL);
+	
+	t_var **refs = malloc(*count * sizeof(t_var*));
+	if (!refs) return NULL;
+	
+	size_t var_idx = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			if (current->readonly) {
+				refs[var_idx++] = current;
+			}
+			current = current->next;
+		}
+	}
+	
+	qsort(refs, *count, sizeof(t_var*), compare_vars);
+	return refs;
 }
 
 t_var	**get_sorted_variable_refs(t_var_table *table, size_t *count)

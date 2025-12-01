@@ -19,6 +19,10 @@ int	is_builtin_command(const char *command)
 		return (1);
 	if (!ft_strcmp(command, "export"))
 		return (1);
+	if (!ft_strcmp(command, "readonly"))
+		return (1);
+	if (!ft_strcmp(command, "unset"))
+		return (1);
 	
 	return (0);
 }
@@ -40,6 +44,10 @@ int	execute_builtin(t_shell *shell, char **argv)
 		return( builtin_type(argv));
 	if (!ft_strcmp(argv[0], "export"))
 		return( builtin_export(shell, argv));
+	if (!ft_strcmp(argv[0], "readonly"))
+		return( builtin_readonly(shell, argv));
+	if (!ft_strcmp(argv[0], "unset"))
+		return( builtin_unset(shell, argv));
 	
 	return (1); // should never reach here
 }

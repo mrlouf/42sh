@@ -6,7 +6,7 @@ on:
       - main
       - develop*
       - np-github_ci2
-      - executor
+      - executor*
       - hm-basic_builtins
   pull_request:
     branches: 
