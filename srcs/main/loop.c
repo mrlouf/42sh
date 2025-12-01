@@ -58,7 +58,7 @@ void	shell_mainloop(t_shell *sh)
 				free(input);
 				exit(1);
 			}
-			//sh->last_exit_status = execute(sh, fake_input_ast);
+			sh->last_exit_status = execute(sh, fake_input_ast);
 			//add_history(input); // Moved to tokenise_input for better flow
 			free(input);
 			free_ast_node(fake_input_ast);

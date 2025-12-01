@@ -14,9 +14,17 @@ int	count_words(const char *str, const char *charset)
 		{
 			in_word = 1;
 			word_count++;
+			if (str[i] == '\'' || str[i] == '\"')
+			{
+				char quote = str[i];
+				i++;
+				while (str[i] && str[i] != quote)
+					i++;
+			}
 		}
 		i++;
 	}
+	printf("Word count: %d\n", word_count); // DEBUG
 	return (word_count);
 }
 
@@ -36,6 +44,7 @@ static void	get_words(const char *str, const char *charset, char **tokens)
 
 	while (str[i])
 	{
+
 		if (ft_strchr(charset, str[i]) != NULL)
 		{
 			if (in_word)
@@ -53,6 +62,13 @@ static void	get_words(const char *str, const char *charset, char **tokens)
 		{
 			in_word = 1;
 			start = i;
+			if (str[i] == '\'' || str[i] == '\"')
+			{
+				char quote = str[i];
+				i++;
+				while (str[i] && str[i] != quote)
+					i++;
+			}
 		}
 		i++;
 	}

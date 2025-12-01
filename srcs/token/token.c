@@ -14,8 +14,8 @@ void		tokenise_input(t_shell *sh, char *input)
 
 	tokens = split_charset(input, sh->ifs);
 
-
 	for (int i = 0; tokens[i] != NULL; i++)
 	{ printf("\"%s\" ", tokens[i]); }
 	printf("\n");
+	ft_array_free((void **)tokens);
 }
