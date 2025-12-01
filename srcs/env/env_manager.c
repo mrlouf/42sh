@@ -155,7 +155,7 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	{
 		if (ft_strcmp(current->name, name) == 0)
 		{
-			if (current->readonly)
+			if (value && current->readonly)
 			{
 				ft_putstr_fd("42sh: ", 2);
 				ft_putstr_fd((char *)name, 2);
@@ -164,7 +164,11 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 			}
 			
 			free(current->value);
-			current->value = ft_strdup((char *)value);
+			if (current->value)
+				current->value = value == NULL ? ft_strdup("") : ft_strdup((char *)value);
+			else
+				current->value = value == NULL ? NULL : ft_strdup((char *)value);
+			
 			current->exported = exported;
 			return (0);
 		}
@@ -192,6 +196,57 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	new_var->readonly = 0;
 	new_var->next = table->buckets[hash];
 	table->buckets[hash] = new_var;
+
+	return (0);
+}
+
+int	unset_variable(t_var_table *table, const char *name)
+{
+	unsigned int	hash;
+	t_var			*current;
+	t_var			*prev;
+
+	hash = hash_string(name, VAR_HASH_SIZE);
+	prev = NULL;
+	current = table->buckets[hash];
+
+	while (current)
+	{
+		if (!ft_strcmp(current->name, name))
+		{
+			if (current->readonly)
+				return (1); // DEBUG: CHECK LEAKS
+			if (prev)
+			{
+				if (current->next)
+				{
+					prev->next = current->next;
+				}
+				else
+				{
+					prev->next = NULL;
+				}
+				
+				free(current->name);
+				if (current->value)
+					free(current->value);
+				free(current);
+			}
+			else
+			{
+				free(table->buckets[hash]->name);
+				if (table->buckets[hash]->value)
+					free(table->buckets[hash]->value);
+				free(table->buckets[hash]);
+				table->buckets[hash] = NULL;
+			}
+
+			
+			return (0);
+		}
+		prev = current;
+		current = current->next;
+	}
 
 	return (0);
 }
@@ -278,6 +333,23 @@ int	is_variable_readonly(t_var_table *table, const char *name)
 	return (0);
 }
 
+int	is_variable_exported(t_var_table *table, const char *name)
+{
+	unsigned int	hash = hash_string(name, VAR_HASH_SIZE);
+	t_var			*current = table->buckets[hash];
+
+	while(current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			return (current->exported);
+		}
+		current = current->next;
+	}
+
+	return (0);
+}
+
 void	free_var_table(t_var_table *table)
 {
 	unsigned int	i;
@@ -295,8 +367,12 @@ void	free_var_table(t_var_table *table)
 		{
 			next = current->next;
 			free(current->name);
-			if (current->value) free(current->value);
+
+			if (current->value)
+				free(current->value);
+
 			free(current);
+
 			current = next;
 		}
 		table->buckets[i] = NULL;

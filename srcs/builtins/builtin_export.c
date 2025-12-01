@@ -3,11 +3,14 @@
 #include "../../incs/builtins.h"
 #include "../../incs/env.h"
 
-static void	print_export_formatted(t_var **refs, size_t count)
+static void	print_export_formatted(t_shell *sh, t_var **refs, size_t count)
 {
 	for (size_t i = 0; i < count; i++)
 		{
-			ft_putstr_fd("declare -x ", 1);
+            ft_putstr_fd("declare -", 1);
+            if (is_variable_readonly(sh->vars, refs[i]->name))
+                ft_putstr_fd("r", 1);
+            ft_putstr_fd("x ", 1);
 			ft_putstr_fd(refs[i]->name, 1);
 			if (refs[i]->value)
 			{
@@ -72,7 +75,7 @@ static int	display_exported_vars(t_shell *sh)
 			return (1);
 		}
 		
-		print_export_formatted(refs, count);
+		print_export_formatted(sh, refs, count);
 		free(refs);
 
 	return (0);
@@ -104,7 +107,8 @@ int	builtin_export(t_shell *sh, char **argv)
             
             if (set_variable(sh->vars, name, value, 1, 1) != 0)
             {
-                ft_putstr_fd("export: failed to set variable\n", 2);
+                if (!is_variable_readonly(sh->vars, name))
+                    ft_putstr_fd("export: failed to set variable\n", 2);
                 free(name);
                 free(value);
                 exit_status = 1;
@@ -124,7 +128,8 @@ int	builtin_export(t_shell *sh, char **argv)
             
             if (set_variable(sh->vars, argv[i], NULL, 1, 0) != 0)
             {
-                ft_putstr_fd("export: failed to set variable\n", 2);
+                if (!is_variable_readonly(sh->vars, argv[i]))
+                    ft_putstr_fd("export: failed to set variable\n", 2);
                 exit_status = 1;
                 continue;
             }

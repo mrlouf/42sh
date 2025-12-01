@@ -45,16 +45,20 @@ static int	parse_readonly_assignment(const char *arg, char **name, char **value)
 	return (1);
 }
 
-static void	print_readonly_formatted(t_var **refs, size_t count)
+static void	print_readonly_formatted(t_shell *sh, t_var **refs, size_t count)
 {
 	for (size_t i = 0; i < count; i++)
 	{
-		ft_putstr_fd("declare -r ", 1);
+		ft_putstr_fd("declare -r", 1);
+		if (is_variable_exported(sh->vars, refs[i]->name))
+			ft_putstr_fd("x", 1);
+		ft_putstr_fd(" ", 1);
 		ft_putstr_fd(refs[i]->name, 1);
 		if (refs[i]->value)
 		{
-			ft_putstr_fd("=", 1);
+			ft_putstr_fd("=\"", 1);
 			ft_putstr_fd(refs[i]->value, 1);
+			ft_putstr_fd("\"", 1);
 		}
 		ft_putstr_fd("\n", 1);
 	}
@@ -73,7 +77,7 @@ static int	display_readonly_vars(t_shell *sh)
 	
 	if (refs)
 	{
-		print_readonly_formatted(refs, count);
+		print_readonly_formatted(sh, refs, count);
 		free(refs);
 	}
 	
@@ -115,7 +119,8 @@ int	builtin_readonly(t_shell *sh, char **argv)
 				continue;
 			}
 			
-			if (set_variable(sh->vars, name, value, 0, 1) != 0)
+			int exported = is_variable_exported(sh->vars, name);
+			if (set_variable(sh->vars, name, value, exported, 1) != 0)
 			{
 				ft_putstr_fd("readonly: failed to set variable\n", 2);
 				free(name);
@@ -136,11 +141,12 @@ int	builtin_readonly(t_shell *sh, char **argv)
 				continue;
 			}
 			
-			if (!get_variable(sh->vars, argv[i]))
+			int exported = is_variable_exported(sh->vars, argv[i]);
+			if (set_variable(sh->vars, argv[i], NULL, exported, 0) != 0)
 			{
-				ft_putstr_fd("readonly: ", 2);
-				ft_putstr_fd(argv[i], 2);
-				ft_putstr_fd(": variable not found\n", 2);
+				ft_putstr_fd("readonly: failed to set variable\n", 2);
+				free(name);
+				free(value);
 				exit_status = 1;
 				continue;
 			}
