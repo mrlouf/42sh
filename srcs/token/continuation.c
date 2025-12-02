@@ -36,5 +36,6 @@ char    *complete_input_with_continuation_line(const char *input)
         free(temp);
         free(additional_input);
     }
+	printf("%s\n", new_input);
     return (new_input);
 }

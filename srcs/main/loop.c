@@ -37,11 +37,12 @@ static void free_ast_node(t_ast_node *node)
 
 void	shell_mainloop(t_shell *sh)
 {
-	char *input = NULL;
+	char *input;
 
 	while (42)
 	{
 		create_prompt(sh);
+		input = NULL;
 		input = readline(sh->prompt);
 		free(sh->prompt);
 		sh->prompt = NULL;

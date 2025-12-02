@@ -1,9 +1,58 @@
 #include "../incs/42sh.h"
 #include "../incs/token.h"
 
+void	skip_quotes(char *input, int *i)
+{
+	char	quote = input[*i];
+	(*i)++;
+	while (input[*i] && input[*i] != quote) {
+		if ((input[*i] == '\\' && quote == '\"' && input[*i + 1])
+			|| (input[*i] == '\\' && quote == '\"' && input[*i + 1] == '\"'))
+			(*i) += 2;
+		else
+			(*i)++;
+	}
+	if (input[*i] == quote)
+		(*i)++;
+}
+
+t_list **get_tokens_to_list(char *input, char *ifs)
+{
+	t_list	**tokens = NULL;
+	int		i = 0;
+	int		start = 0;
+
+	if (!input)
+		return (NULL);
+
+	while (input[i]) {
+		while (input[i] && ft_strchr(ifs, input[i]))
+			i++;
+		if (!input[i])
+			break;
+		else { // Regular word
+			start = i;
+			while (input[i] && ft_strchr(ifs, input[i]) == NULL) {
+				if (input[i] == '\'' || input[i] == '\"') { // Quotes
+					skip_quotes(input, &i);
+				} else
+					i++;
+			}
+		}
+		// Here we would normally extract the token and add it to the list
+		// For simplicity, we just print it
+		char *token_value = ft_substr(input, start, i - start);
+		printf("^%s^ ", token_value); // DEBUG
+		free(token_value);
+		printf("%d\n", i); // DEBUG
+	}
+
+	return (tokens);
+}
+
 void	tokenise_input(t_shell *sh, char *input)
 {
-	char **tokens = NULL;
+	t_list **tokens = NULL;
 
 	if (check_continuation_line(input))
 		input = complete_input_with_continuation_line(input);
@@ -12,17 +61,7 @@ void	tokenise_input(t_shell *sh, char *input)
 	add_history(input);
 	write_history(0);
 
-	tokens = split_charset(input, sh->ifs);
-	if (!tokens)
-	{
-		ft_putstr_fd("Error: Malloc: Tokenisation failed\n", 2);
-		free(input);
-		exit(1);
-	}
+	tokens = get_tokens_to_list(input, sh->ifs);
 
-	printf("%zu tokens:\n", ft_array_size((void **)tokens));
-	for (int i = 0; tokens[i] != NULL; i++)
-	{ printf("^%s^ ", tokens[i]); }
-	printf("\n");
-	ft_array_free((void **)tokens);
+
 }
