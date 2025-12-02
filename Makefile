@@ -18,8 +18,9 @@ SRC				=	/main/main.c					\
 					/builtins/builtin_exit.c		\
 					/builtins/builtin_export.c		\
 					/builtins/builtin_type.c		\
-					/builtins/builtin_readonly.c		\
+					/builtins/builtin_readonly.c	\
 					/builtins/builtin_unset.c		\
+					/builtins/builtin_pwd.c		\
 
 SRCDIR			=	srcs
 SRCS			=	$(addprefix $(SRCDIR)/, $(SRC))

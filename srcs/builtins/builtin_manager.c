@@ -7,6 +7,8 @@ int	is_builtin_command(const char *command)
 	if (!command)
 		return (0);
 	
+	if (!ft_strcmp(command, "pwd"))
+		return (1);
 	if (!ft_strcmp(command, "exit"))
 		return (1);
 	if (!ft_strcmp(command, "cd"))
@@ -32,6 +34,8 @@ int	execute_builtin(t_shell *shell, char **argv)
 	if (!argv || !argv[0])
 		return (1);
 	
+	if (!ft_strcmp(argv[0], "pwd"))
+		return (builtin_pwd(shell, argv));
 	if (!ft_strcmp(argv[0], "exit"))
 		return (builtin_exit(shell, argv));
 	if (!ft_strcmp(argv[0], "cd"))

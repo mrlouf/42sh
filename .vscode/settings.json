@@ -18,6 +18,7 @@
 		"tuple": "c",
 		"type_traits": "c",
 		"utility": "c",
-		"ranges": "c"
+		"ranges": "c",
+		"main.h": "c"
 	}
 }

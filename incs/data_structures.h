@@ -108,6 +108,11 @@ typedef struct s_echo_config {
 	int	stop_processing;
 } t_echo_config;
 
+typedef struct s_pwd_config {
+	int	logical;
+	int	physical;
+} t_pwd_config;
+
 typedef struct s_shell {
 	t_var_table			*vars;
 	
