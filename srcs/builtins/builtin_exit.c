@@ -11,7 +11,6 @@ static int is_valid_number(const char *str)
 	char *trimmed;
 	char *endptr;
 	int i, j;
-	long result;
 	
 	if (!str)
 		return (0);
@@ -38,7 +37,7 @@ static int is_valid_number(const char *str)
 	ft_memmove(trimmed, trimmed + i, j - i + 2);
 	
 	errno = 0;
-	result = strtol(trimmed, &endptr, 10);
+	strtol(trimmed, &endptr, 10);
 	
 	if (errno == ERANGE || *endptr != '\0' || endptr == trimmed)
 	{
