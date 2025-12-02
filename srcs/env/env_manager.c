@@ -154,13 +154,11 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	while (current)
 	{
 		if (ft_strcmp(current->name, name) == 0)
-		{
-			// For readonly variables, always update export flag
+		{ 
 			if (current->readonly)
 			{
 				current->exported = exported;
 				
-				// If trying to change value of readonly variable, error after setting export
 				if (value && was_equalized)
 				{
 					ft_putstr_fd("42sh: ", 2);
@@ -187,7 +185,7 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	t_var	*new_var = malloc(sizeof(t_var));
 	if (!new_var)
 	{
-		//TODO handle malloc fails -> Garbage collector
+		//TODO MAYBE handle malloc fails -> Garbage collector
 		return (1);
 	}
 
@@ -380,6 +378,37 @@ void	free_var_table(t_var_table *table)
 	free(table);
 }
 
+t_var	**get_all_sorted_refs(t_var_table *table, size_t *count)
+{
+	*count = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			(*count)++;
+			current = current->next;
+		}
+	}
+	
+	if (*count == 0)
+		return (NULL);
+	
+	t_var **refs = malloc(*count * sizeof(t_var*));
+	if (!refs)
+		return NULL;
+
+	size_t var_idx = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			refs[var_idx++] = current;
+			current = current->next;
+		}
+	}
+
+	qsort(refs, *count, sizeof(t_var*), compare_vars);
+	return refs;
+}
+
 t_var	**get_sorted_readonly_refs(t_var_table *table, size_t *count)
 {
 	*count = 0;
@@ -392,6 +421,7 @@ t_var	**get_sorted_readonly_refs(t_var_table *table, size_t *count)
 			current = current->next;
 		}
 	}
+
 	
 	if (*count == 0)
 		return (NULL);

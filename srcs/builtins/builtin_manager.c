@@ -25,6 +25,8 @@ int	is_builtin_command(const char *command)
 		return (1);
 	if (!ft_strcmp(command, "unset"))
 		return (1);
+	if (!ft_strcmp(command, "set"))
+		return (1);
 	
 	return (0);
 }
@@ -52,6 +54,8 @@ int	execute_builtin(t_shell *shell, char **argv)
 		return( builtin_readonly(shell, argv));
 	if (!ft_strcmp(argv[0], "unset"))
 		return( builtin_unset(shell, argv));
+	if (!ft_strcmp(argv[0], "set"))
+		return( builtin_set(shell, argv));
 	
 	return (1); // should never reach here
 }

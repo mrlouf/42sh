@@ -12,6 +12,7 @@ int		builtin_env(t_shell *shell, char **argv);
 int		builtin_echo(char **argv);
 int		builtin_type(char **argv);
 int		builtin_export(t_shell *shell, char **argv);
+int		builtin_set(t_shell *shell, char **argv);
 int		builtin_unset(t_shell *shell, char **argv);
 int		builtin_readonly(t_shell *shell, char **argv);
 

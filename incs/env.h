@@ -14,6 +14,7 @@ int				mark_variable_as_exported(t_var_table *table, const char *name);
 int				mark_variable_as_readonly(t_var_table *table, const char *name);
 int				is_variable_exported(t_var_table *table, const char *name);
 int				is_variable_readonly(t_var_table *table, const char *name);
+t_var			**get_all_sorted_refs(t_var_table *table, size_t *count);
 t_var			**get_sorted_variable_refs(t_var_table *table, size_t *count);
 t_var			**get_sorted_readonly_refs(t_var_table *table, size_t *count);
 void			free_var_table(t_var_table *table);
