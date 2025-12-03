@@ -75,15 +75,7 @@ void	tokenise_input(t_shell *sh, char *input)
 		printf("^%s^ ", (char *)tmp->content);
 	}
 	printf("\n");
-	
-	// Free tokens list
-	t_list *tmp;
-	while (*tokens)
-	{
-		tmp = (*tokens)->next;
-		free((*tokens)->content);
-		free(*tokens);
-		*tokens = tmp;
-	}
+
+	ft_lstclear(tokens, free);
 	free(tokens);
 }
