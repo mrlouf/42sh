@@ -5,8 +5,7 @@ char	*complete_input_with_quotes(char *input)
 {
 	char *additional_input = NULL;
 
-	while (is_missing_quotes(input))
-	{
+	do {
 		additional_input = readline("> ");
 		if (!additional_input)
 		{
@@ -19,7 +18,8 @@ char	*complete_input_with_quotes(char *input)
 		input = ft_strjoin(input, additional_input);
 		free(temp);
 		free(additional_input);
-	}
+	} while (is_missing_quotes(input));
+
 	return (input);
 }
 
@@ -28,8 +28,6 @@ int	is_missing_quotes(const char *input)
 	int	i = 0;
 	int	single_quote_open = 0;
 	int	double_quote_open = 0;
-
-	int dquote = 0, squote = 0;
 
 	while (input[i])
 	{
@@ -48,15 +46,12 @@ int	is_missing_quotes(const char *input)
 		else if (input[i] == '\'' && double_quote_open == 0
 			&& (i > 0 || input[i - 1] != '\\')) {
 			single_quote_open = !single_quote_open;
-			squote++;
 		}
 		else if (input[i] == '\"' && single_quote_open == 0
 			&& (i > 0 || input[i - 1] != '\\')) {
 			double_quote_open = !double_quote_open;
-			dquote++;
 		}
 		i++;
 	}
-	printf("Single quotes: %d, Double quotes: %d\n", squote, dquote); // DEBUG
 	return (single_quote_open || double_quote_open);
 }
