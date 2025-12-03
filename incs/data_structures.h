@@ -7,10 +7,16 @@
 # include <unistd.h>
 # include <signal.h>
 
-# define REDIRECT_IN		1    // <
-# define REDIRECT_OUT		2    // >
-# define REDIRECT_APPEND	3    // >>
-# define REDIRECT_HEREDOC	4    // <<
+# define REDIRECT_IN				1	// <
+# define REDIRECT_OUT				2	// >
+# define REDIRECT_APPEND			3	// >>
+# define REDIRECT_STDERR			4	// 2>
+# define REDIRECT_HEREDOC			5	// <<
+# define REDIRECT_HERESTRING		6	// <<<
+# define REDIRECT_STDERR_APPEND		7	// 2>>
+# define REDIRECT_BOTH				8	// &>
+# define REDIRECT_STDOUT_TO_STDERR	9	// >&2
+# define REDIRECT_STDERR_TO_STDOUT	10	// 2>&1
 
 typedef enum e_token_type {
 	TOKEN_WORD,

@@ -85,7 +85,12 @@ t_ast_node *fake_parse_input(char *input)
 	{
 		if (ft_strcmp(tokens[i], ">") == 0 || 
 			ft_strcmp(tokens[i], ">>") == 0 || 
-			ft_strcmp(tokens[i], "<") == 0)
+			ft_strcmp(tokens[i], "<") == 0 ||
+			ft_strcmp(tokens[i], "2>") == 0 ||
+			ft_strcmp(tokens[i], "<<") == 0 ||
+			ft_strcmp(tokens[i], "<<<") == 0 ||
+			ft_strcmp(tokens[i], "2>>") == 0 ||
+			ft_strcmp(tokens[i], "&>") == 0)
 		{
 			if (i + 1 >= token_count)
 			{
@@ -96,6 +101,12 @@ t_ast_node *fake_parse_input(char *input)
 			}
 			redir_count++;
 			i++; // Skip filename
+		}
+		else if (ft_strcmp(tokens[i], ">&2") == 0 || 
+				 ft_strcmp(tokens[i], "2>&1") == 0)
+		{
+			redir_count++;
+			// No i++ since these don't require filenames
 		}
 		else
 		{
@@ -156,6 +167,62 @@ t_ast_node *fake_parse_input(char *input)
 			node->redirs[redir_idx].fd = -1;
 			redir_idx++;
 			i++; // Skip filename
+		}
+		else if (ft_strcmp(tokens[i], "2>") == 0)
+		{
+			node->redirs[redir_idx].type = REDIRECT_STDERR;
+			node->redirs[redir_idx].file = ft_strdup(tokens[i + 1]);
+			node->redirs[redir_idx].fd = -1;
+			redir_idx++;
+			i++; // Skip filename
+		}
+		else if (ft_strcmp(tokens[i], "<<") == 0)
+		{
+			node->redirs[redir_idx].type = REDIRECT_HEREDOC;
+			node->redirs[redir_idx].file = ft_strdup(tokens[i + 1]);
+			node->redirs[redir_idx].fd = -1;
+			redir_idx++;
+			i++; // Skip delimiter
+		}
+		else if (ft_strcmp(tokens[i], "<<<") == 0)
+		{
+			node->redirs[redir_idx].type = REDIRECT_HERESTRING;
+			node->redirs[redir_idx].file = ft_strdup(tokens[i + 1]);
+			node->redirs[redir_idx].fd = -1;
+			redir_idx++;
+			i++; // Skip string
+		}
+		else if (ft_strcmp(tokens[i], "2>>") == 0)
+		{
+			node->redirs[redir_idx].type = REDIRECT_STDERR_APPEND;
+			node->redirs[redir_idx].file = ft_strdup(tokens[i + 1]);
+			node->redirs[redir_idx].fd = -1;
+			redir_idx++;
+			i++; // Skip filename
+		}
+		else if (ft_strcmp(tokens[i], "&>") == 0)
+		{
+			node->redirs[redir_idx].type = REDIRECT_BOTH;
+			node->redirs[redir_idx].file = ft_strdup(tokens[i + 1]);
+			node->redirs[redir_idx].fd = -1;
+			redir_idx++;
+			i++; // Skip filename
+		}
+		else if (ft_strcmp(tokens[i], ">&2") == 0)
+		{
+			node->redirs[redir_idx].type = REDIRECT_STDOUT_TO_STDERR;
+			node->redirs[redir_idx].file = ft_strdup("2"); // Special case
+			node->redirs[redir_idx].fd = -1;
+			redir_idx++;
+			// No i++ since >&2 is a single token
+		}
+		else if (ft_strcmp(tokens[i], "2>&1") == 0)
+		{
+			node->redirs[redir_idx].type = REDIRECT_STDERR_TO_STDOUT;
+			node->redirs[redir_idx].file = ft_strdup("1"); // Special case
+			node->redirs[redir_idx].fd = -1;
+			redir_idx++;
+			// No i++ since 2>&1 is a single token
 		}
 		else
 		{
@@ -226,6 +293,20 @@ void fake_print_ast_node(t_ast_node *node)
 			ft_putstr_fd(" >> ", 1);
 		else if (node->redirs[i].type == REDIRECT_IN)
 			ft_putstr_fd(" < ", 1);
+		else if (node->redirs[i].type == REDIRECT_STDERR)
+			ft_putstr_fd(" 2> ", 1);
+		else if (node->redirs[i].type == REDIRECT_HEREDOC)
+			ft_putstr_fd(" << ", 1);
+		else if (node->redirs[i].type == REDIRECT_HERESTRING)
+			ft_putstr_fd(" <<< ", 1);
+		else if (node->redirs[i].type == REDIRECT_STDERR_APPEND)
+			ft_putstr_fd(" 2>> ", 1);
+		else if (node->redirs[i].type == REDIRECT_BOTH)
+			ft_putstr_fd(" &> ", 1);
+		else if (node->redirs[i].type == REDIRECT_STDOUT_TO_STDERR)
+			ft_putstr_fd(" >&2", 1);
+		else if (node->redirs[i].type == REDIRECT_STDERR_TO_STDOUT)
+			ft_putstr_fd(" 2>&1", 1);
 		ft_putstr_fd(node->redirs[i].file, 1);
 	}
 	ft_putstr_fd("\n", 1);

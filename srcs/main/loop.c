@@ -28,7 +28,7 @@ void	shell_mainloop(t_shell *sh)
 			}
 			
 			// DEBUG: Print AST for debugging (comment out when not needed)
-			//fake_print_ast_node(ast);
+			// fake_print_ast_node(ast);
 			
 			sh->last_exit_status = execute(sh, ast);
 			

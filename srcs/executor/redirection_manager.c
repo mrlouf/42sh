@@ -30,7 +30,7 @@ static t_saved_fd *setup_redirections(t_shell *sh, t_redir *redirs, int count)
 	if (!saved_fds)
 		return NULL;
 
-	int stdin_saved = 0, stdout_saved = 0;
+	int stdin_saved = 0, stdout_saved = 0, stderr_saved = 0;
 	int actual_count = 0;
 	
 	for (int i = 0; i < count; i++)
@@ -101,6 +101,60 @@ static t_saved_fd *setup_redirections(t_shell *sh, t_redir *redirs, int count)
 			}
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
+		}
+		else if (redirs[i].type == REDIRECT_STDERR)
+		{
+			if (!stderr_saved)
+			{
+				saved_fds[actual_count].original_fd = STDERR_FILENO;
+				saved_fds[actual_count].saved_fd = dup(STDERR_FILENO);
+				if (saved_fds[actual_count].saved_fd < 0)
+				{
+					cleanup_saved_fds(saved_fds, actual_count);
+
+					ft_putstr_fd("42sh: ", 2);
+					perror("dup failed");
+
+					return (NULL);
+				}
+				stderr_saved = 1;
+				actual_count++;
+			}
+			
+			int fd = open(redirs[i].file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd < 0)
+			{
+				cleanup_saved_fds(saved_fds, actual_count);
+
+				ft_putstr_fd("42sh: ", 2);
+				perror(redirs[i].file);
+
+				return (NULL);
+			}
+			dup2(fd, STDERR_FILENO);
+			close(fd);
+		}
+		else
+		{
+			const char *redir_name = "unknown";
+			if (redirs[i].type == REDIRECT_HEREDOC)
+				redir_name = "heredoc (<<)";
+			else if (redirs[i].type == REDIRECT_HERESTRING)
+				redir_name = "herestring (<<<)";
+			else if (redirs[i].type == REDIRECT_STDERR_APPEND)
+				redir_name = "stderr append (2>>)";
+			else if (redirs[i].type == REDIRECT_BOTH)
+				redir_name = "both stdout/stderr (&>)";
+			else if (redirs[i].type == REDIRECT_STDOUT_TO_STDERR)
+				redir_name = "stdout to stderr (>&2)";
+			else if (redirs[i].type == REDIRECT_STDERR_TO_STDOUT)
+				redir_name = "stderr to stdout (2>&1)";
+			
+			cleanup_saved_fds(saved_fds, actual_count);
+			ft_putstr_fd("42sh: ", 2);
+			ft_putstr_fd((char *)redir_name, 2);
+			ft_putstr_fd(" redirection not yet implemented\n", 2);
+			return (NULL);
 		}
 	}
 	
