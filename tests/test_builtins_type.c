@@ -27,19 +27,30 @@ static t_shell *create_test_shell(void) {
     if (!shell)
         return NULL;
     
-    shell->vars = calloc(1, sizeof(t_var_table));
+    shell->vars = init_var_table();
     if (!shell->vars) {
         free(shell);
         return NULL;
     }
     
-    // Initialize with basic environment variables
     char *current_pwd = getcwd(NULL, 0);
     if (current_pwd) {
-        set_variable(shell->vars, "PWD", current_pwd, 1);
+        int result = set_variable(shell->vars, "PWD", current_pwd, 1, 1);
+        if (result != 0) {
+            printf("DEBUG: Failed to set PWD, error: %d\n", result);
+        }
         free(current_pwd);
     }
-    set_variable(shell->vars, "HOME", getenv("HOME"), 1);
+    
+    char *home_env = getenv("HOME");
+    if (home_env) {
+        int result = set_variable(shell->vars, "HOME", home_env, 1, 1);
+        if (result != 0) {
+            printf("DEBUG: Failed to set HOME, error: %d\n", result);
+        }
+    } else {
+        set_variable(shell->vars, "HOME", "/tmp", 1, 1);
+    }
     
     return shell;
 }

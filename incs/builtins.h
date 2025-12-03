@@ -9,7 +9,7 @@ int		builtin_exit(t_shell *shell, char **argv);
 int		builtin_cd(t_shell *shell, char **argv);
 int		builtin_env(t_shell *shell, char **argv);
 int		builtin_echo(char **argv);
-int		builtin_type(char **argv);
+int		builtin_type(t_shell *shell, char **argv);
 int		builtin_export(t_shell *shell, char **argv);
 
 #endif
