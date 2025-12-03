@@ -25,14 +25,40 @@ static int print_type_of(t_shell *shell, const char *cmd)
 	return (1);
 } 
 
+static int has_flag(char *cmd)
+{
+	if (cmd[0] == '-')
+	{
+		if (cmd[1] == '-')
+		{
+			printf("type: usage: type [-afptP] name [name ...]");
+			return (1);
+		}
+		if (cmd[ft_strlen(cmd) - 1] == 'a')
+			return(2);
+		if (cmd[ft_strlen(cmd) - 1] == 'f')
+			return (3);
+		if (cmd[ft_strlen(cmd) - 1] == 'p')
+			return (4);
+		if (cmd[ft_strlen(cmd) - 1] == 't')
+			return (5);
+		if (cmd[ft_strlen(cmd) - 1] == 'P')
+			return (6);
+	}
+	return (1);
+}
 int	builtin_type(t_shell *shell,char **argv)
 {
 	int i = 1;
 	if (!argv[1])
 	{
-		ft_putendl_fd("type: usage: type name [name ...]", 2);
+		ft_putendl_fd("type: usage: type [-afptP] name [name ...]", 2);
 		return (1);
 	}
+
+	int flag = has_flag(argv[1]);
+	if (flag == 1)
+		return (1);
 	for (; argv[i]; i++)
 		print_type_of(shell, argv[i]);
 	
