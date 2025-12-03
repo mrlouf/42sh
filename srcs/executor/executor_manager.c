@@ -29,7 +29,7 @@ static char	**build_argv_for_execve(char *command)
 	return (argv);
 }
 
-static char *find_executable_path(const char *command, t_shell *shell)
+char *find_executable_path(t_shell *shell, const char *command)
 {
 	char	*cached_path;
 	char	*path_env;
@@ -150,7 +150,7 @@ static int	execute_simple_command(t_shell *shell, char **argv)
 		return (1);										// DEBUG
 	free(trimmed_command);								// DEBUG
 
-	path = find_executable_path(argv[0], shell);
+	path = find_executable_path(shell, argv[0]);
 	if (!path)
 	{
 		ft_putstr_fd("42sh: ", 2);
