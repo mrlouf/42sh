@@ -53,6 +53,11 @@ typedef struct s_redir {
 	int		fd;
 } t_redir;
 
+typedef struct s_saved_fd {
+	int original_fd;
+	int saved_fd;
+} t_saved_fd;
+
 typedef struct s_ast_node {
 	t_ast_type			type;
 	
@@ -132,6 +137,7 @@ typedef struct s_shell {
 	t_cmd_table 		*cmd_cache;
 	
 	int 				last_exit_status;
+	int					saved_fd_count;
 	
 	struct sigaction 	old_sigint;
 	struct sigaction 	old_sigtstp;

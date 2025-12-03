@@ -15,30 +15,38 @@ static int	intlen(int n)
 	return (l);
 }
 
-char	*ft_itoa(int n)
+char *ft_itoa(int n)
 {
-	char	*str;
-	int		len;
+	char *str;
+	int len;
+	int is_negative = 0;
 
 	if (n == -2147483648)
 		return (ft_strdup("-2147483648"));
-	len = intlen(n);
-	str = (char *)malloc(sizeof(char) * (len + 1));
-	if (!str)
-		return (NULL);
-	str[len--] = '\0';
+	
 	if (n < 0)
 	{
-		str[0] = '-';
+		is_negative = 1;
 		n = -n;
 	}
-	while (len > 0)
+	
+	len = intlen(n) + is_negative;
+	str = malloc(sizeof(char) * (len + 1));
+	if (!str)
+		return (NULL);
+	
+	str[len] = '\0';
+	len--;
+	
+	while (n > 0)
 	{
 		str[len] = (n % 10) + '0';
 		n = n / 10;
 		len--;
 	}
-	if (str[len] != '-')
-		str[len] = (n % 10) + '0';
+	
+	if (is_negative)
+		str[0] = '-';
+	
 	return (str);
 }
