@@ -77,7 +77,8 @@ static void	handle_shell_level(t_var_table *table)
 	char	*lvl = get_variable(table, "SHLVL");
 	if (lvl)
 	{
-		char *new_lvl = ft_itoa(ft_atoi(lvl) + 1);
+		int converted_level = ft_atoi(lvl) + 1;
+		char *new_lvl = ft_itoa(converted_level);
 		set_variable(table, "SHLVL", new_lvl, 1, 1);
 		free(new_lvl);
 	}

@@ -7,6 +7,7 @@
 # include <sys/types.h>		// for pid_t
 # include <pwd.h>			// for getcwd and family
 # include <sys/stat.h>		// for stat struct (pwd builtin)
+# include <fcntl.h>
 # include <string.h>
 # include <errno.h>
 

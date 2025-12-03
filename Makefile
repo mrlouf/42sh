@@ -10,6 +10,7 @@ SRC				=	/main/main.c					\
 					/main/loop.c					\
 					/env/env_manager.c				\
 					/executor/executor_manager.c	\
+					/executor/redirection_manager.c	\
 					/executor/cmd_cache.c			\
 					/executor/fake_parser.c			\
 					/builtins/builtin_manager.c	\
@@ -89,7 +90,7 @@ MAKE			=	Makefile
 # -=-=-=-=-    FLAGS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 CC				=	cc
-CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g -fsanitize=address
+CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g #-fsanitize=address
 DEPFLAGS		=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #

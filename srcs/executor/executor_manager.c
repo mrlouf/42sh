@@ -5,7 +5,7 @@
 #include "../incs/env.h"
 #include <sys/wait.h>
 
-static char *find_executable_path(const char *command, t_shell *shell)
+char *find_executable_path(t_shell *shell, const char *command)
 {
 	char	*cached_path;
 	char	*path_env;
@@ -70,7 +70,6 @@ static char **build_envp_from_var_table(t_var_table *vars)
 	size_t			i;
 	char			**envp;
 
-	// Count exported variables
 	for (hash = 0; hash < VAR_HASH_SIZE; hash++)
 	{
 		tmp = vars->buckets[hash];
@@ -126,7 +125,7 @@ static int	execute_simple_command(t_shell *shell, char **argv)
 		return (1);										// DEBUG
 	free(trimmed_command);								// DEBUG
 
-	path = find_executable_path(argv[0], shell);
+	path = find_executable_path(shell, argv[0]);
 	if (!path)
 	{
 		ft_putstr_fd("42sh: ", 2);
@@ -165,41 +164,46 @@ static int	execute_simple_command(t_shell *shell, char **argv)
 	return (1);
 }
 
-int	execute(t_shell *sh, t_ast_node *input_ast)
+int	execute_external_command(t_shell *sh, t_ast_node *input_ast)
+{
+	char **argv = input_ast->argv;
+			char **argv_copy = malloc(sizeof(char*) * (ft_array_size((void**)argv) + 1));
+			if (!argv_copy)
+				return (1);
+			
+			for (int i = 0; argv[i]; i++)
+			{
+				argv_copy[i] = ft_strdup(argv[i]);
+				if (!argv_copy[i])
+				{
+					for (int j = 0; j < i; j++)
+						free(argv_copy[j]);
+					free(argv_copy);
+					return (1);
+				}
+			}
+			argv_copy[ft_array_size((void**)argv)] = NULL;
+
+			int exit_code = execute_simple_command(sh, argv_copy);
+			return (exit_code);
+}
+
+int execute(t_shell *sh, t_ast_node *input_ast)
 {
 	if (!input_ast || !input_ast->argv || !input_ast->argv[0])
 		return (0);
 
-	// Handle redirections first (TODO: implement actual redirection)
 	if (input_ast->redir_count > 0)
 	{
-		ft_putstr_fd("42sh: redirections not yet implemented\n", 2);
+		return redirect(sh, input_ast);
 	}
-
-	char **argv = input_ast->argv;
-
-	if (is_builtin_command(argv[0]))
+	else
 	{
-		return execute_builtin(sh, argv);
-	}
-
-	char **argv_copy = malloc(sizeof(char*) * (ft_array_size((void**)argv) + 1));
-	if (!argv_copy)
-		return (1);
-	
-	for (int i = 0; argv[i]; i++)
-	{
-		argv_copy[i] = ft_strdup(argv[i]);
-		if (!argv_copy[i])
+		if (is_builtin_command(input_ast->argv[0]))
+			return execute_builtin(sh, input_ast->argv);
+		else
 		{
-			for (int j = 0; j < i; j++)
-				free(argv_copy[j]);
-			free(argv_copy);
-			return (1);
+			return execute_external_command(sh, input_ast);	
 		}
 	}
-	argv_copy[ft_array_size((void**)argv)] = NULL;
-
-	int exit_code = execute_simple_command(sh, argv_copy);
-	return (exit_code);
 }
