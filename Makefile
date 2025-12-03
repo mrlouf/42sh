@@ -82,7 +82,7 @@ MAKE			=	Makefile
 # -=-=-=-=-    FLAGS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 CC				=	cc
-CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g -fsanitize=address
+CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g# -fsanitize=address
 DEPFLAGS		=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
