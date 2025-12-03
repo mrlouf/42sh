@@ -11,6 +11,7 @@ SRC				=	/main/main.c					\
 					/env/env_manager.c				\
 					/executor/executor_manager.c	\
 					/executor/cmd_cache.c			\
+					/executor/fake_parser.c			\
 					/builtins/builtin_manager.c	\
 					/builtins/builtin_cd.c			\
 					/builtins/builtin_echo.c		\

@@ -100,7 +100,7 @@ static char **build_envp_from_var_table(t_var_table *vars)
 		tmp = vars->buckets[hash];
 		while (tmp)
 		{
-			if (tmp->exported)
+			if (tmp->exported && tmp->value)
 				len++;
 			tmp = tmp->next;
 		}

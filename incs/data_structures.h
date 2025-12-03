@@ -7,6 +7,11 @@
 # include <unistd.h>
 # include <signal.h>
 
+# define REDIRECT_IN		1    // <
+# define REDIRECT_OUT		2    // >
+# define REDIRECT_APPEND	3    // >>
+# define REDIRECT_HEREDOC	4    // <<
+
 typedef enum e_token_type {
 	TOKEN_WORD,
 	TOKEN_PIPE,
