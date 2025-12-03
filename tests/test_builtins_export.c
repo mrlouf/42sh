@@ -74,7 +74,7 @@ Test(export_builtin, export_no_args_returns_ordered_list)
 	set_variable(shell->vars, "MMM", "middle", 1, 1);
 
 	size_t  count = count_stored_env_variables(shell->vars);
-	t_var   **sorted_refs = get_sorted_variable_refs(shell->vars, &count);
+	t_var   **sorted_refs = get_sorted_exported_refs(shell->vars, &count);
 
 	cr_assert_not_null(sorted_refs);
 

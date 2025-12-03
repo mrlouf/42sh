@@ -141,7 +141,7 @@ int	builtin_readonly(t_shell *sh, char **argv)
 				continue;
 			}
 			
-			if (get_variable(sh->vars, argv[i]))
+			if (variable_exists(sh->vars, argv[i]))
 			{
 				mark_variable_as_readonly(sh->vars, argv[i]);
 			}

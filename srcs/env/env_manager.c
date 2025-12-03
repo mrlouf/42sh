@@ -30,6 +30,27 @@ void	print_var_table(t_var_table *table) // DEBUG
 	ft_putstr_fd("*****************************\n", 0);
 }
 
+int variable_exists(t_var_table *table, const char *name)
+{
+	unsigned int hash;
+	t_var *current;
+
+	if (!table || !name)
+		return (0);
+
+	hash = hash_string(name, VAR_HASH_SIZE);
+	current = table->buckets[hash];
+
+	while (current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+			return (1);
+		current = current->next;
+	}
+
+	return (0);
+}
+
 char	*get_variable(t_var_table *table, const char *name)
 {
 	unsigned int	hash;
@@ -444,7 +465,7 @@ t_var	**get_sorted_readonly_refs(t_var_table *table, size_t *count)
 	return refs;
 }
 
-t_var	**get_sorted_variable_refs(t_var_table *table, size_t *count)
+t_var	**get_sorted_exported_refs(t_var_table *table, size_t *count)
 {
 	*count = 0;
 	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
