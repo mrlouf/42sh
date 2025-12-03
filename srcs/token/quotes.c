@@ -31,9 +31,11 @@ int	is_missing_quotes(const char *input)
 
 	while (input[i])
 	{
-		if (input[i] == '\'' && double_quote_open == 0)
+		if (input[i] == '\'' && double_quote_open == 0
+			&& (i > 0 || input[i - 1] != '\\'))
 			single_quote_open = !single_quote_open;
-		else if (input[i] == '\"' && single_quote_open == 0)
+		else if (input[i] == '\"' && single_quote_open == 0
+			&& (i > 0 || input[i - 1] != '\\'))
 			double_quote_open = !double_quote_open;
 		i++;
 	}

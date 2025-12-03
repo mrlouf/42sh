@@ -6,7 +6,9 @@ int     check_continuation_line(const char *input)
     int len = ft_strlen(input);
     if (len == 0)
         return (0);
-    return (input[len - 1] == '\\');
+	else if (input[len - 1] == '\\' && (len == 1 || input[len - 2] != '\\'))
+		return (1);
+    return (0);
 }
 
 char    *complete_input_with_continuation_line(const char *input)
