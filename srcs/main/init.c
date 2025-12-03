@@ -9,6 +9,7 @@ void	init_shell(t_shell *shell, char **env)
 	shell->prompt = NULL;
 	shell->vars = capture_initial_environment(env);
 	shell->cmd_cache = init_cmd_table();
+	
 	if (!shell->cmd_cache)
 	{
 		ft_putstr_fd("Error: Failed to initialize command cache\n", 2);

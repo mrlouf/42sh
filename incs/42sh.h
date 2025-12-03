@@ -3,10 +3,12 @@
 
 # include <limits.h>
 // # include <linux/limits.h>
-#include <sys/param.h> // for MAXPATHLEN
-# include <sys/types.h>	// for pid_t
-# include <pwd.h>		// for getcwd and family
+#include <sys/param.h>		// for MAXPATHLEN
+# include <sys/types.h>		// for pid_t
+# include <pwd.h>			// for getcwd and family
+# include <sys/stat.h>		// for stat struct (pwd builtin)
 # include <string.h>
+# include <errno.h>
 
 # include "../libft/incs/libft.h"
 # include "data_structures.h"

@@ -154,9 +154,28 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	while (current)
 	{
 		if (ft_strcmp(current->name, name) == 0)
-		{
+		{ 
+			if (current->readonly)
+			{
+				current->exported = exported;
+				
+				if (value && was_equalized)
+				{
+					ft_putstr_fd("42sh: ", 2);
+					ft_putstr_fd((char *)name, 2);
+					ft_putstr_fd(": readonly variable\n", 2);
+					return (1);
+				}
+				
+				return (0);
+			}
+			
 			free(current->value);
-			current->value = ft_strdup((char *)value);
+			if (was_equalized)
+				current->value = value == NULL ? ft_strdup("") : ft_strdup((char *)value);
+			else
+				current->value = NULL;
+			
 			current->exported = exported;
 			return (0);
 		}
@@ -166,7 +185,7 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	t_var	*new_var = malloc(sizeof(t_var));
 	if (!new_var)
 	{
-		//TODO handle malloc fails -> Garbage collector
+		//TODO MAYBE handle malloc fails -> Garbage collector
 		return (1);
 	}
 
@@ -181,10 +200,52 @@ int	set_variable(t_var_table *table, const char *name, const char *value, int ex
 	}
 	
 	new_var->exported = exported;
+	new_var->readonly = 0;
 	new_var->next = table->buckets[hash];
 	table->buckets[hash] = new_var;
 
 	return (0);
+}
+
+int	unset_variable(t_var_table *table, const char *name)
+{
+	unsigned int	hash;
+	t_var			*current;
+	t_var			*prev;
+
+	if (!table || !name)
+		return (0);
+
+	hash = hash_string(name, VAR_HASH_SIZE);
+	prev = NULL;
+	current = table->buckets[hash];
+
+	while (current)
+	{
+		if (!ft_strcmp(current->name, name))
+		{
+			if (current->readonly)
+				return (1); // Cannot unset readonly variable
+				
+			// Remove from linked list
+			if (prev)
+				prev->next = current->next;
+			else
+				table->buckets[hash] = current->next;
+			
+			// Free memory
+			free(current->name);
+			if (current->value)
+				free(current->value);
+			free(current);
+			
+			return (0);
+		}
+		prev = current;
+		current = current->next;
+	}
+
+	return (0);  // Variable not found - not an error in POSIX unset
 }
 
 int	count_stored_env_variables(t_var_table *table)
@@ -233,6 +294,59 @@ int mark_variable_as_exported(t_var_table *table, const char *name)
 	return (1);
 }
 
+int mark_variable_as_readonly(t_var_table *table, const char *name)
+{
+	unsigned int	hash = hash_string(name, VAR_HASH_SIZE);
+	t_var			*current = table->buckets[hash];
+
+	while (current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			current->readonly = 1;
+			return (0);
+		}
+
+		current = current->next;
+	}
+
+	return (1);
+}
+
+int	is_variable_readonly(t_var_table *table, const char *name)
+{
+	unsigned int	hash = hash_string(name, VAR_HASH_SIZE);
+	t_var			*current = table->buckets[hash];
+
+	while(current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			return (current->readonly);
+		}
+		current = current->next;
+	}
+
+	return (0);
+}
+
+int	is_variable_exported(t_var_table *table, const char *name)
+{
+	unsigned int	hash = hash_string(name, VAR_HASH_SIZE);
+	t_var			*current = table->buckets[hash];
+
+	while(current)
+	{
+		if (ft_strcmp(current->name, name) == 0)
+		{
+			return (current->exported);
+		}
+		current = current->next;
+	}
+
+	return (0);
+}
+
 void	free_var_table(t_var_table *table)
 {
 	unsigned int	i;
@@ -250,14 +364,84 @@ void	free_var_table(t_var_table *table)
 		{
 			next = current->next;
 			free(current->name);
-			if (current->value) free(current->value);
+
+			if (current->value)
+				free(current->value);
+
 			free(current);
+
 			current = next;
 		}
 		table->buckets[i] = NULL;
 		i++;
 	}
 	free(table);
+}
+
+t_var	**get_all_sorted_refs(t_var_table *table, size_t *count)
+{
+	*count = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			(*count)++;
+			current = current->next;
+		}
+	}
+	
+	if (*count == 0)
+		return (NULL);
+	
+	t_var **refs = malloc(*count * sizeof(t_var*));
+	if (!refs)
+		return NULL;
+
+	size_t var_idx = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			refs[var_idx++] = current;
+			current = current->next;
+		}
+	}
+
+	qsort(refs, *count, sizeof(t_var*), compare_vars);
+	return refs;
+}
+
+t_var	**get_sorted_readonly_refs(t_var_table *table, size_t *count)
+{
+	*count = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			if (current->readonly) {
+				(*count)++;
+			}
+			current = current->next;
+		}
+	}
+
+	
+	if (*count == 0)
+		return (NULL);
+	
+	t_var **refs = malloc(*count * sizeof(t_var*));
+	if (!refs) return NULL;
+	
+	size_t var_idx = 0;
+	for (size_t i = 0; i < VAR_HASH_SIZE; i++) {
+		t_var *current = table->buckets[i];
+		while (current) {
+			if (current->readonly) {
+				refs[var_idx++] = current;
+			}
+			current = current->next;
+		}
+	}
+	
+	qsort(refs, *count, sizeof(t_var*), compare_vars);
+	return refs;
 }
 
 t_var	**get_sorted_variable_refs(t_var_table *table, size_t *count)

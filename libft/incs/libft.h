@@ -106,7 +106,7 @@ void		ft_array_print(char **array);
 size_t		ft_array_size(void **array);
 
 //	DEBUG
-void		cucufu(void);
+void		cucufu(int code);
 
 
 #endif
