@@ -25,6 +25,11 @@ t_list **get_tokens_to_list(char *input, char *ifs)
 	if (!input)
 		return (NULL);
 
+	tokens = (t_list**)malloc(sizeof(t_list **));
+	if (!tokens)
+		return (NULL);
+	*tokens = NULL;
+
 	while (input[i]) {
 		while (input[i] && ft_strchr(ifs, input[i]))
 			i++;
@@ -33,20 +38,21 @@ t_list **get_tokens_to_list(char *input, char *ifs)
 		else { // Regular word
 			start = i;
 			while (input[i] && ft_strchr(ifs, input[i]) == NULL) {
-				if (input[i] == '\'' || input[i] == '\"') { // Quotes
+				if ((input[i] == '\'' || input[i] == '\"')
+					&& i > 1 && input[i - 1] != '\\') { // Quotes
 					skip_quotes(input, &i);
 				} else
 					i++;
 			}
 		}
-		// Here we would normally extract the token and add it to the list
-		// For simplicity, we just print it
 		char *token_value = ft_substr(input, start, i - start);
-		printf("^%s^ ", token_value); // DEBUG
-		free(token_value);
-		printf("%d\n", i); // DEBUG
+		if (!token_value)
+			return (NULL);
+		t_list	*new = ft_lstnew(token_value);
+		if (!new)
+			return (NULL);
+		ft_lstadd_back(tokens, new);
 	}
-
 	return (tokens);
 }
 
@@ -62,6 +68,11 @@ void	tokenise_input(t_shell *sh, char *input)
 	write_history(0);
 
 	tokens = get_tokens_to_list(input, sh->ifs);
-
-
+	
+	// DEBUG: print tokens
+	printf("Tokens: ");
+	for (t_list *tmp = *tokens; tmp != NULL; tmp = tmp->next) {
+		printf("^%s^ ", (char *)tmp->content);
+	}
+	printf("\n");
 }

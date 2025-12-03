@@ -29,15 +29,34 @@ int	is_missing_quotes(const char *input)
 	int	single_quote_open = 0;
 	int	double_quote_open = 0;
 
+	int dquote = 0, squote = 0;
+
 	while (input[i])
 	{
-		if (input[i] == '\'' && double_quote_open == 0
-			&& (i > 0 || input[i - 1] != '\\'))
+		if ((input[i] == '\'' || input[i] == '\"')
+			&& i > 1 && input[i - 1] == '\\' && input[i - 2] == '\\') {
+			if (input[i] == '\'')
+				single_quote_open = !single_quote_open;
+			else if (input[i] == '\"')
+				double_quote_open = !double_quote_open;
+		}
+ 		else if ((input[i] == '\'' || input[i] == '\"') // escape characters -> \" or \'
+			&& i > 0 && input[i - 1] == '\\') {
+			i++;
+			continue;
+		}
+		else if (input[i] == '\'' && double_quote_open == 0
+			&& (i > 0 || input[i - 1] != '\\')) {
 			single_quote_open = !single_quote_open;
+			squote++;
+		}
 		else if (input[i] == '\"' && single_quote_open == 0
-			&& (i > 0 || input[i - 1] != '\\'))
+			&& (i > 0 || input[i - 1] != '\\')) {
 			double_quote_open = !double_quote_open;
+			dquote++;
+		}
 		i++;
 	}
+	printf("Single quotes: %d, Double quotes: %d\n", squote, dquote); // DEBUG
 	return (single_quote_open || double_quote_open);
 }

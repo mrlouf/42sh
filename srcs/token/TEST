@@ -1,43 +1,49 @@
-# Basic Splitting
+# Basic tokenization
 echo hello world
 ls -l /tmp
 
-# Quotes
+# Simple quotes
 echo "hello world"
 echo 'hello world'
+
+# Quotes with spaces
 echo "hello    world"
 echo 'hello    world'
+
+# Mixed quotes
 echo foo"bar baz"qux
 echo 'foo"bar' baz'qux'
-echo "foo'bar"baz'qux"
 
-# Mixed Quotes and Spaces
+# Quote combinations
 echo "a   b" c   d
-echo 'a   b' c   d
 echo a" b "c
 echo "a b"c'd e'
 
-# Redirections and Operators
+# Operators
 ls > out.txt
-cat < in.txt | grep foo
+cat < in.txt
+echo hello | grep lo
+
+# Redirections
 echo hello >file 2>&1
-echo "hello" > "file name with spaces.txt"
+echo "hello" > "file name.txt"
 
-# Variable Expansion (for later stages)
-echo $HOME
-echo "$HOME"
-echo '$HOME'
-echo "User: $USER, Home: $HOME"
-
-# Escaped Quotes
+# Escaped quotes (critical test cases)
 echo "He said: \"hello\""
-echo 'It'\''s fine'
-echo "Mix 'single' and \"double\" quotes"
+echo 'can'\''t do it'
+echo "test\"quote"
+echo "backslash: \\"
 
-# Edge Cases
+# Edge cases
 echo ""
 echo ''
-echo "unclosed
-echo 'unclosed
 echo foo""bar
 echo foo''bar
+
+# Unclosed quotes (should trigger continuation)
+echo "unclosed
+echo 'unclosed
+
+# Complex cases
+echo "Mix 'single' and \"double\""
+echo 'It'\''s '\''working'\'''
