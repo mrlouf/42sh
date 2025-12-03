@@ -67,7 +67,7 @@ static int parse_assignment(const char *arg, char **name, char **value)
 static int	display_exported_vars(t_shell *sh)
 {
 	size_t count;
-	t_var **refs = get_sorted_variable_refs(sh->vars, &count);
+	t_var **refs = get_sorted_exported_refs(sh->vars, &count);
 	
 	if (!refs)
 	{

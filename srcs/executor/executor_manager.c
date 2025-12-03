@@ -5,30 +5,6 @@
 #include "../incs/env.h"
 #include <sys/wait.h>
 
-static char	**build_argv_for_execve(char *command)
-{
-	char	**argv;
-	char	**split = ft_split(command, ' ');
-	size_t	split_size = ft_array_size((void **)split);
-
-	argv = malloc(sizeof(char *) * (split_size + 1));
-	if (!argv)
-	{
-		ft_array_free((void **)split);
-		return (NULL);
-	}
-
-	for (size_t i = 0; i < split_size; i++)
-	{
-		argv[i] = ft_strdup(split[i]);
-	}
-	
-	argv[split_size] = NULL;
-
-	ft_array_free((void **)split);
-	return (argv);
-}
-
 static char *find_executable_path(const char *command, t_shell *shell)
 {
 	char	*cached_path;
@@ -191,23 +167,39 @@ static int	execute_simple_command(t_shell *shell, char **argv)
 
 int	execute(t_shell *sh, t_ast_node *input_ast)
 {
-	char	**argv;
-
 	if (!input_ast || !input_ast->argv || !input_ast->argv[0])
 		return (0);
 
-	argv = build_argv_for_execve(input_ast->argv[0]);
-	if (!argv)
-		return (1);
+	// Handle redirections first (TODO: implement actual redirection)
+	if (input_ast->redir_count > 0)
+	{
+		ft_putstr_fd("42sh: redirections not yet implemented\n", 2);
+	}
+
+	char **argv = input_ast->argv;
 
 	if (is_builtin_command(argv[0]))
 	{
-		int result = execute_builtin(sh, argv);
-		ft_array_free((void **)argv);
-		return (result);
+		return execute_builtin(sh, argv);
 	}
 
-	int exit_code = execute_simple_command(sh, argv);
+	char **argv_copy = malloc(sizeof(char*) * (ft_array_size((void**)argv) + 1));
+	if (!argv_copy)
+		return (1);
+	
+	for (int i = 0; argv[i]; i++)
+	{
+		argv_copy[i] = ft_strdup(argv[i]);
+		if (!argv_copy[i])
+		{
+			for (int j = 0; j < i; j++)
+				free(argv_copy[j]);
+			free(argv_copy);
+			return (1);
+		}
+	}
+	argv_copy[ft_array_size((void**)argv)] = NULL;
 
+	int exit_code = execute_simple_command(sh, argv_copy);
 	return (exit_code);
 }
