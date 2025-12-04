@@ -5,30 +5,6 @@
 #include "../incs/env.h"
 #include <sys/wait.h>
 
-static char	**build_argv_for_execve(char *command)
-{
-	char	**argv;
-	char	**split = ft_split(command, ' ');
-	size_t	split_size = ft_array_size((void **)split);
-
-	argv = malloc(sizeof(char *) * (split_size + 1));
-	if (!argv)
-	{
-		ft_array_free((void **)split);
-		return (NULL);
-	}
-
-	for (size_t i = 0; i < split_size; i++)
-	{
-		argv[i] = ft_strdup(split[i]);
-	}
-	
-	argv[split_size] = NULL;
-
-	ft_array_free((void **)split);
-	return (argv);
-}
-
 char *find_executable_path(t_shell *shell, const char *command)
 {
 	char	*cached_path;
@@ -94,13 +70,12 @@ static char **build_envp_from_var_table(t_var_table *vars)
 	size_t			i;
 	char			**envp;
 
-	// Count exported variables
 	for (hash = 0; hash < VAR_HASH_SIZE; hash++)
 	{
 		tmp = vars->buckets[hash];
 		while (tmp)
 		{
-			if (tmp->exported)
+			if (tmp->exported && tmp->value)
 				len++;
 			tmp = tmp->next;
 		}
@@ -119,7 +94,7 @@ static char **build_envp_from_var_table(t_var_table *vars)
 		tmp = vars->buckets[hash];
 		while (tmp)
 		{
-			if (tmp->exported)
+			if (tmp->exported && tmp->value)
 			{
 				char *name_eq = ft_strjoin(tmp->name, "=");
 				if (name_eq)
@@ -189,25 +164,46 @@ static int	execute_simple_command(t_shell *shell, char **argv)
 	return (1);
 }
 
-int	execute(t_shell *sh, t_ast_node *input_ast)
+int	execute_external_command(t_shell *sh, t_ast_node *input_ast)
 {
-	char	**argv;
+	char **argv = input_ast->argv;
+			char **argv_copy = malloc(sizeof(char*) * (ft_array_size((void**)argv) + 1));
+			if (!argv_copy)
+				return (1);
+			
+			for (int i = 0; argv[i]; i++)
+			{
+				argv_copy[i] = ft_strdup(argv[i]);
+				if (!argv_copy[i])
+				{
+					for (int j = 0; j < i; j++)
+						free(argv_copy[j]);
+					free(argv_copy);
+					return (1);
+				}
+			}
+			argv_copy[ft_array_size((void**)argv)] = NULL;
 
+			int exit_code = execute_simple_command(sh, argv_copy);
+			return (exit_code);
+}
+
+int execute(t_shell *sh, t_ast_node *input_ast)
+{
 	if (!input_ast || !input_ast->argv || !input_ast->argv[0])
 		return (0);
 
-	argv = build_argv_for_execve(input_ast->argv[0]);
-	if (!argv)
-		return (1);
-
-	if (is_builtin_command(argv[0]))
+	if (input_ast->redir_count > 0)
 	{
-		int result = execute_builtin(sh, argv);
-		ft_array_free((void **)argv);
-		return (result);
+		return redirect(sh, input_ast);
 	}
-
-	int exit_code = execute_simple_command(sh, argv);
-
-	return (exit_code);
+	else
+	{
+		if (is_builtin_command(input_ast->argv[0]))
+			return execute_builtin(sh, input_ast->argv);
+		else
+		{
+			return execute_external_command(sh, input_ast);	
+		}
+	}
 }

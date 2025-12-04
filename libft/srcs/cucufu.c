@@ -1,6 +1,6 @@
 #include "../incs/libft.h"
 
-void	cucufu(void)
+void	cucufu(int code)
 {
-	write(2, "cucufu\n", 7);
+	ft_printf("cucufu-%d\n", code);
 }

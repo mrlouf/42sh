@@ -10,14 +10,20 @@ SRC				=	/main/main.c					\
 					/main/loop.c					\
 					/env/env_manager.c				\
 					/executor/executor_manager.c	\
+					/executor/redirection_manager.c	\
 					/executor/cmd_cache.c			\
-					/builtins/builtins_manager.c	\
+					/executor/fake_parser.c			\
+					/builtins/builtin_manager.c	\
 					/builtins/builtin_cd.c			\
 					/builtins/builtin_echo.c		\
 					/builtins/builtin_env.c			\
 					/builtins/builtin_exit.c		\
 					/builtins/builtin_export.c		\
 					/builtins/builtin_type.c		\
+					/builtins/builtin_readonly.c	\
+					/builtins/builtin_unset.c		\
+					/builtins/builtin_set.c			\
+					/builtins/builtin_pwd.c			\
 
 SRCDIR			=	srcs
 SRCS			=	$(addprefix $(SRCDIR)/, $(SRC))
@@ -84,7 +90,7 @@ MAKE			=	Makefile
 # -=-=-=-=-    FLAGS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 CC				=	cc
-CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g -fsanitize=address
+CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g #-fsanitize=address
 DEPFLAGS		=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
