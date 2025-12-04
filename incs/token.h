@@ -14,4 +14,8 @@ char    *complete_input_with_continuation_line(const char *input);
 
 char	*join_new_input(char *dst, char *src);
 
+int		check_missing_operand(t_list **tokens);
+void	complete_input_with_missing_operand(t_list **tokens, char **input);
+
+
 #endif

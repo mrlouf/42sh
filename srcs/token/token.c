@@ -58,16 +58,33 @@ t_list **get_tokens_to_list(char *input, char *ifs)
 
 void	tokenise_input(t_shell *sh, char *input)
 {
-	t_list **tokens = NULL;
+	t_list	**tokens = NULL;
+	int		input_completed = 0;
 
-	if (check_continuation_line(input))
-		input = complete_input_with_continuation_line(input);
-	if (is_missing_quotes(input))
-		input = complete_input_with_quotes(input);
-	add_history(input);
-	write_history(0);
+	while (input_completed == 0) {
 
-	tokens = get_tokens_to_list(input, sh->ifs);
+		if (check_continuation_line(input)) {
+			input = complete_input_with_continuation_line(input);
+			continue;
+		}
+		if (is_missing_quotes(input)) {
+			input = complete_input_with_quotes(input);
+			continue;
+		}
+		tokens = get_tokens_to_list(input, sh->ifs);
+		if (!tokens) {
+			// TODO> handle exit failure from malloc
+            fprintf(stderr, "Error: Failed to allocate memory for tokens.\n");
+			return ;
+		}
+		if (check_missing_operand(tokens)) {
+			complete_input_with_missing_operand(tokens, &input);
+			ft_lstclear(tokens, free);
+			free(tokens);
+			continue;
+		}
+		input_completed = 1;
+	}
 	
 	// DEBUG: print tokens
 	printf("Tokens: ");
@@ -78,4 +95,7 @@ void	tokenise_input(t_shell *sh, char *input)
 
 	ft_lstclear(tokens, free);
 	free(tokens);
+
+	add_history(input);	// Add to history only if the input is valid/complete
+	write_history(0);
 }

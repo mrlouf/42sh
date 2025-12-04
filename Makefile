@@ -12,6 +12,7 @@ SRC				=	/main/main.c					\
 					/token/splitter.c				\
 					/token/continuation.c			\
 					/token/quotes.c					\
+					/token/syntax_check.c			\
 					/env/env_manager.c				\
 					/executor/executor_manager.c	\
 					/executor/cmd_cache.c			\
@@ -82,7 +83,7 @@ MAKE			=	Makefile
 # -=-=-=-=-    FLAGS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 CC				=	cc
-CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g# -fsanitize=address
+CFLAGS			?=	-Wall -Wextra -Werror -pedantic -g -fsanitize=address
 DEPFLAGS		=	-MMD -MP
 
 # -=-=-=-=-    TARGETS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
