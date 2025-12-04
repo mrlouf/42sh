@@ -47,7 +47,7 @@ int	execute_builtin(t_shell *shell, char **argv)
 	if (!ft_strcmp(argv[0], "echo"))
 		return (builtin_echo(argv));
 	if (!ft_strcmp(argv[0], "type"))
-		return( builtin_type(argv));
+		return( builtin_type(shell, argv));
 	if (!ft_strcmp(argv[0], "export"))
 		return( builtin_export(shell, argv));
 	if (!ft_strcmp(argv[0], "readonly"))

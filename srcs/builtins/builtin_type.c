@@ -47,7 +47,7 @@ static int has_flag(char *cmd)
 	}
 	return (1);
 }
-int	builtin_type(t_shell *shell,char **argv)
+int	builtin_type(t_shell *shell, char **argv)
 {
 	int i = 1;
 	if (!argv[1])
