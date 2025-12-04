@@ -47,3 +47,8 @@ echo 'unclosed
 # Complex cases
 echo "Mix 'single' and \"double\""
 echo 'It'\''s '\''working'\'''
+
+echo "hello | world" && echo 'test > file'
+echo "nested 'quotes \"inside\" quotes'"
+echo "escaped \\\"quote\\\""
+echo "escaped \\\"quote\\\"" 'raw text'
