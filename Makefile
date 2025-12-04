@@ -12,7 +12,7 @@ SRC				=	/main/main.c					\
 					/token/splitter.c				\
 					/token/continuation.c			\
 					/token/quotes.c					\
-					/token/syntax_check.c			\
+					/token/syntax/syntax_check.c	\
 					/env/env_manager.c				\
 					/executor/executor_manager.c	\
 					/executor/cmd_cache.c			\

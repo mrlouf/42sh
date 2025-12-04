@@ -54,6 +54,5 @@ char    *complete_input_with_continuation_line(const char *input)
 		if (!new_input)
 			return (NULL);
     }
-	printf("%s\n", new_input);
     return (new_input);
 }

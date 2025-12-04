@@ -51,7 +51,8 @@ void	shell_mainloop(t_shell *sh)
 		if (*input)
 		{
 			printf("Input received: \"%s\"\n", input); // DEBUG
-			tokenise_input(sh, input);
+			if (tokenise_input(sh, input))
+				break;
 			t_ast_node *fake_input_ast = convert_input_to_fake_ast(input); // DEBUG / DEV step for executor branch
 			if (!fake_input_ast)
 			{
@@ -60,9 +61,10 @@ void	shell_mainloop(t_shell *sh)
 				exit(1);
 			}
 			sh->last_exit_status = execute(sh, fake_input_ast);
-			//add_history(input); // Moved to tokenise_input for better flow
 			free_ast_node(fake_input_ast);
 		}
 		free(input);
 	}
+	if (input)
+		free(input);
 }
