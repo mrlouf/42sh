@@ -62,7 +62,6 @@ int	tokenise_input(t_shell *sh, char *input)
 	int		input_completed = 0;
 
 	while (input_completed == 0) {
-
 		if (check_continuation_line(input)) {
 			input = complete_input_with_continuation_line(input);
 			continue;
