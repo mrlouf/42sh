@@ -28,13 +28,12 @@ static int print_type_of(t_shell *shell, const char *cmd, int flags)
 			ft_putendl_fd("file", 1);
 			free(path);
 		}
-		else
-			; // Nothing to print when not found with -t.
+		 // Nothing to print when not found with -t.
 		return (0);
 	}
 
 	// -p print only path or nothing
-	if (flags & FLAG_P)
+	else if (flags & FLAG_P)
 	{
 		if (is_builtin_command(cmd))
 			return (0); // print nothing for builtins
@@ -122,6 +121,36 @@ int builtin_type(t_shell *shell, char **argv)
 			return (2);
 		}
 		// valid
+		// for (int j = 1; opt[j]; j++)
+		// {
+		// 	if (opt[j] == 'a')
+		// 		flags |= FLAG_A;
+		// 	else if (opt[j] == 'f')
+		// 		flags |= FLAG_F;
+		// 	else if (opt[j] == 'p')
+		// 	{
+		// 		flags &= ~(FLAG_T | FLAG_BIG_P); // Remove previous flags if any
+		// 		flags |= FLAG_P;  // Set -p flag
+		// 	}
+		// 	else if (opt[j] == 't')
+		// 	{
+		// 		flags &= ~(FLAG_P | FLAG_BIG_P); // Remove previous flags if any
+		// 		flags |= FLAG_T;  // Set -t flag
+		// 	}
+		// 	else if (opt[j] == 'P')
+		// 	{
+		// 		flags &= ~(FLAG_P | FLAG_T);
+		// 		flags |= FLAG_BIG_P;
+		// 	}
+		// 	else
+		// 	{
+		// 		fprintf(stderr, "type: invalid option -- '%c'\n", opt[j]);
+		// 		ft_putendl_fd("type: usage: type [-afptP] name [name ...]", 2);
+		// 		shell->last_exit_status = 2;
+		// 		return (2);
+		// 	}
+		// }
+		// valid
 		for (int j = 1; opt[j]; j++)
 		{
 			if (opt[j] == 'a')
@@ -130,17 +159,17 @@ int builtin_type(t_shell *shell, char **argv)
 				flags |= FLAG_F;
 			else if (opt[j] == 'p')
 			{
-				flags &= ~(FLAG_T | FLAG_BIG_P); // Remove previous flags if any
-				flags |= FLAG_P;  // Set -p flag
+				flags &= ~(FLAG_T | FLAG_BIG_P); // Remove conflicting flags
+				flags |= FLAG_P;				 // Set -p flag
 			}
 			else if (opt[j] == 't')
 			{
-				flags &= ~(FLAG_P | FLAG_BIG_P); // Remove previous flags if any
-				flags |= FLAG_T;  // Set -t flag
+				flags &= ~(FLAG_P | FLAG_BIG_P); // Remove conflicting flags
+				flags |= FLAG_T;				 // Set -t flag
 			}
 			else if (opt[j] == 'P')
 			{
-				flags &= ~(FLAG_P | FLAG_T);
+				flags &= ~(FLAG_P | FLAG_T); // Remove conflicting flags
 				flags |= FLAG_BIG_P;
 			}
 			else
