@@ -14,6 +14,35 @@
 	!!!LEFT To-Do when command is ALIAS
 */
 
+static int print_type_of_all(t_shell *shell, const char *cmd)
+{
+	char *path;
+	int found = 0;
+
+	// Check if it's a builtin
+	if (is_builtin_command(cmd))
+	{
+		printf("%s is a shell builtin\n", cmd);
+		found = 1;
+	}
+
+	// Check if it's an executable in PATH
+	if ((path = find_executable_path(shell, cmd)) != NULL)
+	{
+		printf("%s is %s\n", cmd, path);
+		free(path);
+		found = 1;
+	}
+
+	if (!found)
+	{
+		fprintf(stderr, "type: %s: not found\n", cmd);
+		return (1);
+	}
+
+	return (0);
+}
+
 static int print_type_of(t_shell *shell, const char *cmd, int flags)
 {
 	char *path;
@@ -46,16 +75,8 @@ static int print_type_of(t_shell *shell, const char *cmd, int flags)
 		return (0);
 	}
 
-	// -a 
-	if (flags & FLAG_A)
-		printf("FLAG A");
-
-	// -f
-	if (flags & FLAG_F)
-		printf("FLAG F");
-
 	// -P
-	if (flags & FLAG_BIG_P)
+	else if (flags & FLAG_BIG_P)
 	{
 		path = find_executable_path(shell, cmd);
 		if (path)
@@ -64,6 +85,21 @@ static int print_type_of(t_shell *shell, const char *cmd, int flags)
 			free(path);
 		}
 	}
+
+	// -a 
+	if (flags & FLAG_A)
+		return(print_type_of_all(shell, cmd));
+
+	// -f
+	if (flags & FLAG_F)
+	{
+		if (is_builtin_command(cmd))
+		{
+			printf("%s is a shell builtin\n", cmd);
+			return (0);
+		}
+	}
+
 
 	// Default output
 	if (is_builtin_command(cmd))
