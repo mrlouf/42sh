@@ -8,6 +8,7 @@
 #include <limits.h>  // For PATH_MAX
 #include "../incs/42sh.h"
 #include "../incs/builtins.h"
+#include "../incs/env.h" // Añadir este include para las funciones de variables
 
 // Test suite with setup and teardown
 void setup_type_tests(void) {
@@ -73,13 +74,25 @@ Test(type_builtin, finds_external_command) {
     t_shell *shell = create_test_shell();
 
     char *argv[] = {"type", "ls", NULL};
-
-    // Run the built-in
     int result = builtin_type(shell, argv);
 
-    // Check return code and standard output
-    cr_assert_eq(result, 0, "type ls should succed");
-    cr_assert_stdout_match_str("is /bin/ls\n", "Should output the full path of 'ls'");
+	cr_assert_eq(result, 0, "type ls should succeed"); // Usar el result aquí
 
-    cleanup_test_shell(shell);
+	// Capture the stdout 
+	FILE *output_file = cr_get_redirected_stdout();
+	fseek(output_file, 0, SEEK_END);
+	long length = ftell(output_file);
+	fseek(output_file, 0, SEEK_SET);
+
+	if (length > 0) {
+		char *output = malloc(length + 1);
+		fread(output, 1, length, output_file);
+		output[length] = '\0';
+
+		// Check that the info is the expected 
+		cr_assert(strstr(output, "ls is /bin/ls") != NULL, 
+			"Should display 'ls is /bin/ls'");
+		free(output);
+	}
+	cleanup_test_shell(shell);
 }

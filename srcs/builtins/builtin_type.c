@@ -100,7 +100,6 @@ static int print_type_of(t_shell *shell, const char *cmd, int flags)
 		}
 	}
 
-
 	// Default output
 	if (is_builtin_command(cmd))
 	{
